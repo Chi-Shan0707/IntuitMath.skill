@@ -185,10 +185,15 @@ When facing any mathematical concept X, the agent should ask:
 1. Is there a **probability** interpretation? (Bernstein principle)
 2. Is there a **geometric** intuition? (Visualization)
 3. Is there an **algebraic structure**? (Abstraction)
-4. Is there a **physical** background? (Application-driven)
-5. Is there a **combinatorial** interpretation? (Discretization)
-6. Is there an **economic** motivation? (Optimization, game theory)
-7. Is there a **biological** application? (Dynamics, networks, evolution)
+4. Is there a **physical** background? (Mechanics, thermodynamics, quantum)
+5. Is there a **chemical** motivation? (Molecular symmetry, reaction kinetics, crystallography)
+6. Is there a **biological / medical** application? (Population dynamics, epidemiology, genetics, imaging)
+7. Is there an **economic / financial** motivation? (Game theory, optimization, risk, mechanism design)
+8. Is there a **demographic / social science** context? (Population projection, voting, social networks)
+9. Is there a **statistical** interpretation? (Estimation, inference, high-dimensional data)
+10. Is there a **combinatorial** interpretation? (Discretization)
+11. Is there an **engineering** application? (Signal processing, control, information theory)
+12. Is there a **linguistic or musical** connection? (Formal languages, harmony, Fourier)
 
 ---
 

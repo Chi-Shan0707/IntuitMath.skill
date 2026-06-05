@@ -122,7 +122,9 @@ If `problem-library/` is writable:
     │
     ├── [Connector] — Web search for cross-domain connections
     │   Prompt: "Search for alternative proofs of [X] from other fields.
-    │   Look for applications in economics, biology, physics, CS.
+    │   Look for connections in: physics, chemistry, biology, medicine,
+    │   economics, finance, demography, statistics, engineering,
+    │   linguistics, music, social sciences.
     │   Find the Bernstein principle — is there a simpler perspective?"
     │
     ├── [Deriver] — Construct mathematical content
