@@ -6,7 +6,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skill](https://img.shields.io/badge/SKILL.md-v1.0-8A2BE2)](#)
-[![Subjects](https://img.shields.io/badge/subjects-7_domains-2ea44f)](#)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](#contributing)
 
 </div>

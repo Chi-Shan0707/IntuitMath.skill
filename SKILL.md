@@ -230,12 +230,12 @@ Search is MANDATORY when:
 
 **Tool availability varies by platform. Use the first available:**
 
-| Priority | Tool | Platform | Best For |
-|----------|------|----------|----------|
-| 1 | `web_search` | Hermes | General queries |
-| 2 | `web_extract` | Hermes | Extracting from specific URLs |
-| 3 | `browser_navigate` | Hermes/OpenClaw | Interactive pages, JS-heavy sites |
-| 4 | `curl` (via terminal) | Any | APIs, plain-text endpoints |
+| Priority | Hermes | Claude | OpenClaw | Best For |
+|----------|--------|--------|----------|----------|
+| 1 | `web_search` | `websearch` / `exa-search` / `research-lookup` | `web_search` | General queries |
+| 2 | `web_extract` | `webfetch` | `web_extract` | Extracting from specific URLs |
+| 3 | `browser_navigate` | — | `browser_navigate` | Interactive pages, JS-heavy sites |
+| 4 | `curl` (via terminal) | `curl` (via bash) | `curl` (via terminal) | APIs, plain-text endpoints |
 
 ### Search Query Templates
 
