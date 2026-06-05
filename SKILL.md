@@ -23,15 +23,38 @@ Load these files as needed:
 | Situation | Load |
 |-----------|------|
 | Always (mandatory) | `references/mathematician-thinking.md` |
+| Question about specific domain | `subskills/<domain>.md` (see Routing below) |
+| Cross-domain connections needed | `references/cross-domain-patterns.md` |
 | Historical motivation analysis | `references/historical-methodology.md` |
 | Known development cases | `references/known-developments.md` |
-| Cross-domain connections | `references/cross-domain-patterns.md` |
 | HTML output requested | `templates/math-note.html` |
 
 **Important**: Mathematics is too vast to encode in reference files. When you
-encounter a topic NOT covered in the references, you MUST use web search to
-find historical context, cross-domain connections, and applications. The
-references are seeds, not encyclopedias.
+encounter a topic NOT covered in the references or subskills, you MUST use web
+search (see Web Search Integration below). The references are seeds, not
+encyclopedias.
+
+---
+
+## Subskill Routing
+
+When the question falls into a specific domain, load the corresponding subskill
+for deeper motivation ladders, toolkit reconstruction cases, and domain-specific
+cross-domain connections:
+
+| Topic Signals | Subskill File |
+|---------------|---------------|
+| limits, continuity, ε-δ, integrals, series, convergence | `subskills/calculus.md` |
+| matrices, eigenvalues, linear systems, SVD, determinants | `subskills/linear-algebra.md` |
+| distributions, expectation, CLT, random walks, stochastic | `subskills/probability.md` |
+| max/min, convex, duality, gradient descent, variational | `subskills/optimization.md` |
+| heat/wave/Laplace, Fourier, PDE boundary values | `subskills/pde.md` |
+| counting, primes, graphs, modular arithmetic, combinatorics | `subskills/discrete-math.md` |
+| groups, rings, fields, symmetry, Galois, representations | `subskills/abstract-algebra.md` |
+| multiple domains or unclear | stay on main SKILL.md |
+
+If no subskill matches, proceed with the main workflow using only
+`references/mathematician-thinking.md`.
 
 ---
 
@@ -47,7 +70,13 @@ references are seeds, not encyclopedias.
 | **Historical** | "How was X discovered?", "Who invented X?" | Era reconstruction + dialectic |
 | **Problem Solving** | "Solve X", "Calculate Y" | Pólya 4-phase + intuition first |
 
-### Step 2: Toolkit Reconstruction (ALWAYS do this)
+### Step 2: Load Appropriate Subskill
+
+Based on classification, load the relevant subskill file. If the topic is
+covered by a subskill, its motivation ladders and toolkit reconstruction cases
+will provide immediate structured content. If not, proceed with web search.
+
+### Step 3: Toolkit Reconstruction (ALWAYS do this)
 
 For ANY mathematical question about a concept X:
 
@@ -60,9 +89,11 @@ For ANY mathematical question about a concept X:
 6. INVENTION: How did X fill the gap?
 ```
 
-If you don't know the answers, **search the web**. This is not optional.
+If you don't know the answers, **search the web** (see below). This is not
+optional. Check subskills and reference files first; if they don't cover it,
+dispatch a web search.
 
-### Step 3: Construct the Response
+### Step 4: Construct the Response
 
 **Structure** (follow this order, always):
 
@@ -82,20 +113,34 @@ If you don't know the answers, **search the web**. This is not optional.
 - ALWAYS show dead ends and failed attempts alongside successful ones.
 - ALWAYS search for the "Bernstein principle" — a simpler proof from another domain.
 
-### Step 4: Output
+### Step 5: Output
 
 **Dialog mode** (default): Respond directly in conversation.
 
-**HTML mode** (when user requests, or answer is complex):
+**HTML mode** (when user requests, or answer is complex with 3+ major sections):
 - Use `templates/math-note.html` as template
+- Replace placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{TAGS}}`, `{{DATE}}`,
+  `{{MOTIVATION}}`, `{{INTUITIVE_DERIVATION}}`, `{{RIGOROUS_VERSION}}`,
+  `{{MULTI_PERSPECTIVE}}`, `{{CROSS_DOMAIN}}`, `{{REFLECTION}}`
 - Write to current working directory
 - Tell the user the file path
 
-### Step 5: Save to Problem Library (if writable)
+### Step 6: Save to Problem Library
 
-If `problem-library/` is writable:
-- Create `problem-library/YYYY-MM-DD-<topic>.md`
-- Record: question, summary, concept tags, cross-domain connections, reflection
+After every question, save a record:
+
+**If `scripts/save-problem.py` is executable**:
+```bash
+python scripts/save-problem.py \
+    --question "..." \
+    --summary "..." \
+    --tags "tag1,tag2,tag3" \
+    --cross-domain "..." \
+    --reflection "..."
+```
+
+**Otherwise, manually** create `problem-library/YYYY-MM-DD-<topic>.md` with:
+- Question, Summary, Tags, Cross-domain connections, Reflection
 
 ---
 
@@ -103,82 +148,133 @@ If `problem-library/` is writable:
 
 ### When to Activate
 
-**Single-agent** (default for simple questions).
+**Single-agent** (default for simple questions, quick lookups, topics covered
+in subskills/reference files).
 
 **Multi-agent** when ANY of:
-- Topic not covered in reference files → need web research
+- Topic not covered in subskills or reference files
 - User asks for "deep analysis" or "detailed exploration"
 - Question touches 2+ mathematical branches
 - Historical context is central
 
-### Agent Roles
+### Executable Delegation Pattern
+
+When multi-agent mode is triggered, use `delegate_task` with the following
+concrete structure:
 
 ```
-[Orchestrator] — You (the main agent)
-    │
-    ├── [Researcher] — Web search for historical context
-    │   Prompt: "Search for who introduced [X], when, why, what tools
-    │   they had, what they needed. Find specific dates, papers, names."
-    │
-    ├── [Connector] — Web search for cross-domain connections
-    │   Prompt: "Search for alternative proofs of [X] from other fields.
-    │   Look for connections in: physics, chemistry, biology, medicine,
-    │   economics, finance, demography, statistics, engineering,
-    │   linguistics, music, social sciences.
-    │   Find the Bernstein principle — is there a simpler perspective?"
-    │
-    ├── [Deriver] — Construct mathematical content
-    │   Prompt: "Given the historical context and cross-domain connections,
-    │   construct: (1) pre-rigorous intuition, (2) rigorous proof,
-    │   (3) cross-domain alternative. Annotate motivations and bold assumptions."
-    │
-    └── [Synthesizer] — Integrate all outputs into final response
+delegate_task(
+    tasks=[
+        {
+            "goal": "Research historical context for [CONCEPT]",
+            "context": "Search web for: who introduced [CONCEPT], when, why,
+                        what tools they had, what they needed, their first
+                        bold attempt, where it broke down, how [CONCEPT]
+                        filled the gap. Provide specific dates, names,
+                        paper titles. Return a structured report.",
+            "toolsets": ["web"]
+        },
+        {
+            "goal": "Find cross-domain connections for [CONCEPT]",
+            "context": "Search web for: alternative proofs of [CONCEPT]
+                        from other branches, applications in physics,
+                        chemistry, biology, medicine, economics, finance,
+                        demography, statistics, engineering, linguistics,
+                        music, social sciences. Look for the Bernstein
+                        principle — a simpler proof from another domain.
+                        For each connection: what it is, why illuminating.",
+            "toolsets": ["web"]
+        }
+    ]
+)
 ```
 
-### Researcher Subagent Prompt Template
+Researcher and Connector run **in parallel**. After both return, the main
+agent acts as Deriver+Synthesizer: it constructs the mathematical content
+(pre-rigorous → rigorous → cross-domain) using the research results,
+then delivers the response.
 
+### Merge Strategy (Synthesizer)
+
+When subagent results return:
+
+1. **If Researcher and Connector agree**: Use both. Weave historical context
+   into the motivation section; weave cross-domain findings into the
+   multi-perspective section.
+
+2. **If they conflict**: Present both viewpoints with attribution.
+   "The historical record suggests [A], though [B] offers an alternative
+   interpretation." Never silently discard a subagent's finding.
+
+3. **If one fails (empty results)**: Proceed with whatever was found.
+   If both fail, fall back to single-agent mode using your own knowledge
+   and mark the response: "Note: external research was unavailable for
+   this question."
+
+4. **Always**: The main agent adds the mathematical derivation itself
+   (pre-rigorous intuition, rigorous proof, reflection anchor). Subagents
+   provide RESEARCH, not the mathematical content.
+
+---
+
+## Web Search Integration
+
+### When to Search
+
+Search is MANDATORY when:
+- The topic is not covered in subskills/ or references/
+- The user asks "who/when/how was X discovered"
+- Cross-domain connections are needed but not in the pattern library
+
+### How to Search
+
+**Tool availability varies by platform. Use the first available:**
+
+| Priority | Tool | Platform | Best For |
+|----------|------|----------|----------|
+| 1 | `web_search` | Hermes | General queries |
+| 2 | `web_extract` | Hermes | Extracting from specific URLs |
+| 3 | `browser_navigate` | Hermes/OpenClaw | Interactive pages, JS-heavy sites |
+| 4 | `curl` (via terminal) | Any | APIs, plain-text endpoints |
+
+### Search Query Templates
+
+For **historical context**:
 ```
-You are a mathematical historian researching [CONCEPT].
-
-Search the web for:
-1. Who introduced [CONCEPT]? When? In what paper or work?
-2. What concrete problem were they trying to solve?
-3. What mathematical tools did they ALREADY have at that time?
-4. What tools were they MISSING — what couldn't they do?
-5. What was their first bold attempt with existing tools?
-6. Where did that attempt break down?
-7. How did [CONCEPT] fill the gap?
-8. Were there competing approaches at the time?
-
-Provide specific dates, names, paper titles, and historical context.
-Quote primary sources when possible.
-Return a structured report.
+"[CONCEPT] history origin who invented motivation"
+"[MATHEMATICIAN] [CONCEPT] original paper year"
+"history of [CONCEPT] in mathematics"
 ```
 
-### Connector Subagent Prompt Template
-
+For **cross-domain connections**:
 ```
-You are searching for cross-domain mathematical connections for [CONCEPT].
-
-Search the web for:
-1. ALTERNATIVE PROOFS: Is there a simpler proof from another branch?
-   (e.g., probability → analysis, geometry → algebra, combinatorics → number theory)
-2. ECONOMICS: Does [CONCEPT] appear in game theory, optimization,
-   mechanism design, auction theory, portfolio theory?
-3. BIOLOGY: Does [CONCEPT] appear in population dynamics, epidemiology,
-   phylogenetics, neural modeling, genetic algorithms?
-4. PHYSICS: Does [CONCEPT] appear in quantum mechanics, statistical mechanics,
-   relativity, thermodynamics, signal processing?
-5. COMPUTER SCIENCE: Does [CONCEPT] appear in cryptography, ML, complexity,
-   type theory, graph algorithms?
-6. HISTORICAL SURPRISES: Was [CONCEPT] developed FOR one field but found
-   to be fundamental in another?
-
-For each connection found, explain:
-- What the connection is (1-2 sentences)
-- Why it's illuminating
-- Source URL if available
+"[CONCEPT] application in [FIELD]"
+"[CONCEPT] alternative proof probability/physics/economics"
+"[CONCEPT] connection to [OTHER_BRANCH]"
+"[CONCEPT] Bernstein principle simpler proof"
 ```
+
+For **specific math content**:
+```
+"[CONCEPT] intuitive explanation motivation"
+"[CONCEPT] why does it work"
+"proof of [THEOREM] without [ADVANCED_TOOL]"
+```
+
+### Failure Handling
+
+- **No results**: Broaden the query. Remove quotes, use synonyms.
+- **CAPTCHA/blocked**: Switch to a different search tool or use `curl` on
+  known academic sites (Wikipedia, MathWorld, nLab, Stacks Project).
+- **Conflicting sources**: Present the conflict. "Source A says X, Source B
+  says Y. The more standard account is..."
+- **Rate limited**: Wait 5 seconds and retry with a simpler query.
+
+### Caching
+
+After a successful search, if the finding is significant and reusable:
+- Consider adding it to `references/cross-domain-patterns.md` as a new pattern
+- Consider adding a toolkit reconstruction case to the relevant subskill
 
 ---
 
@@ -192,7 +288,9 @@ For each connection found, explain:
 - Admit uncertainty: "We don't know for certain whether X thought this way,
   but the more likely story is..."
 - Give reflection anchors — open questions with no standard answer
-- Proactively mention economic, biological, or physical motivations
+- Proactively mention economic, biological, physical, chemical, demographic,
+  statistical, engineering, linguistic, or musical motivations
+- When a subskill is loaded, use its motivation ladders as the backbone
 
 ### DO NOT
 - Present modern axiomatic definitions as starting points
@@ -202,6 +300,7 @@ For each connection found, explain:
 - Use ε-δ language to explain pre-19th-century mathematics
 - Give only the rigorous version without the pre-rigorous one
 - Ignore cross-domain connections
+- Load a subskill and then ignore its content
 
 ---
 
@@ -214,15 +313,71 @@ Before delivering any response, verify:
 - [ ] Does it distinguish "pre-rigorous intuition" from "rigorous proof"?
 - [ ] Does it include a reflection anchor (open question)?
 - [ ] Does it avoid textbook-style "definition → theorem → proof" ordering?
-- [ ] If the topic wasn't in reference files, did it search the web?
+- [ ] If the topic wasn't in subskills or reference files, did it search the web?
+- [ ] Was the problem saved to the library?
+
+---
+
+## Example Interaction
+
+### Input
+> "Why do we need Lebesgue integration? What's wrong with Riemann?"
+
+### Expected Output Structure
+
+**1. MOTIVATION** (why this matters):
+The Riemann integral works beautifully for continuous functions on
+[a,b]. But by the late 1800s, mathematicians kept bumping into functions
+that Riemann couldn't handle...
+
+**2. PRE-RIGOROUS** (bold attempt):
+Let's try to integrate the Dirichlet function f(x) = 1 if x is rational,
+0 if x is irrational, on [0,1]...
+
+[Bold assumption: maybe we can just "count" the rationals vs irrationals]
+
+The problem: every Riemann upper sum = 1 (rationals are dense), every
+lower sum = 0 (irrationals are dense). The Riemann integral doesn't exist.
+
+But intuitively, the "area under the curve" should be 0 — the rationals
+take up zero "space" in [0,1]. Lebesgue's idea: partition the RANGE
+instead of the domain...
+
+**3. RIGOROUS**: Lebesgue integral via measure theory, monotone convergence,
+dominated convergence, etc.
+
+**4. CROSS-DOMAIN**:
+- Probability: E[X] IS a Lebesgue integral with respect to P
+- Physics: Quantum observables require Lebesgue integration (L² spaces)
+- Signal processing: Lp spaces and Fourier analysis need Lebesgue
+- Economics: Expected utility = Lebesgue integral of utility function
+
+**5. REFLECTION**: Is there an integral that handles even more than Lebesgue?
+(Hint: Henstock-Kurzweil. But why hasn't it replaced Lebesgue?)
 
 ---
 
 ## Configuration Detection
 
 ```
-IF delegate_task available    → enable multi-agent mode
+IF delegate_task available    → enable multi-agent mode (parallel research)
 IF write_file + templates/    → enable HTML generation
+IF scripts/save-problem.py    → use automated problem saving
 IF problem-library/ writable  → enable long-term accumulation
 ELSE                          → degrade gracefully to single-agent dialog
 ```
+
+---
+
+## Intellectual Lineage
+
+This project draws from:
+
+| Thinker | Key Contribution | How We Use It |
+|---------|-----------------|---------------|
+| **Pólya** (1945) | 4-phase heuristic: Understand → Plan → Execute → Reflect | Workflow structure |
+| **Lakatos** (1976) | Mathematics as dialectic: Conjecture → Proof → Refutation → Refinement | Response structure |
+| **Lockhart** (2002) | Math is art; motivation before technique; problems over exercises | Core philosophy |
+| **Tao** (2007-) | Pre-rigorous → Rigorous → Post-rigorous | Presentation order |
+| **Bernstein** (1912) | Probabilistic proof of Weierstrass theorem | Cross-domain simplification principle |
+| **AlphaGeometry** (2024) | Neural intuition + symbolic verification | Multi-agent neuro-symbolic workflow |
