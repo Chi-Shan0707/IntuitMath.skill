@@ -151,6 +151,13 @@ The pattern library links mathematics to external disciplines. These aren't "app
 
 ## Installation
 
+### From GitHub
+```bash
+git clone https://github.com/Chi-Shan0707/IntuitMath.git
+```
+
+Then link it into your agent's skill directory:
+
 ### Hermes
 ```bash
 cp -r IntuitMath ~/.hermes/skills/intuitmath/
@@ -163,6 +170,11 @@ cp -r IntuitMath /path/to/openclaw/skills/intuitmath/
 ```
 
 ### Any SKILL.md-compatible Agent
+```bash
+# Clone first, then point your agent to SKILL.md
+git clone https://github.com/Chi-Shan0707/IntuitMath.git
+```
+
 Load `SKILL.md` into your agent's context when mathematical questions appear. The core thinking framework works everywhere; multi-agent and HTML features require specific agent capabilities.
 
 ---
