@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\\[', right: '\\]', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false}
+        ],
+        throwOnError: false
+    });"></script>
+<style>
+:root {
+    --bg: #faf9f6;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --accent: #2c5f8a;
+    --accent-light: #e8f0f8;
+    --border: #d4d0c8;
+    --quote-border: #2c5f8a;
+    --code-bg: #f0ede8;
+    --danger: #8b3a3a;
+    --success: #3a6b4a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: "Literata", "Lora", "Georgia", serif;
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+h1 {
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: var(--text);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 12px;
+}
+
+h2 {
+    font-size: 1.35em;
+    font-weight: 600;
+    margin: 2.2em 0 0.8em;
+    color: var(--accent);
+}
+
+h3 {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 1.6em 0 0.6em;
+    color: var(--text);
+}
+
+p { margin: 0.8em 0; }
+
+.subtitle {
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 2em;
+    font-size: 0.95em;
+}
+
+.meta {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    margin: 1.5em 0;
+    font-size: 0.9em;
+    color: var(--muted);
+}
+
+.section {
+    margin: 2em 0;
+}
+
+/* 动机块 */
+.motivation {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 1.5em 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.motivation-title {
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.6em;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* 对比展示 */
+.comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 1.5em 0;
+}
+
+.comparison-panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.comparison-panel.wild {
+    border-top: 3px solid var(--danger);
+}
+
+.comparison-panel.rigorous {
+    border-top: 3px solid var(--success);
+}
+
+.comparison-label {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.8em;
+}
+
+.comparison-panel.wild .comparison-label { color: var(--danger); }
+.comparison-panel.rigorous .comparison-label { color: var(--success); }
+
+@media (max-width: 600px) {
+    .comparison { grid-template-columns: 1fr; }
+}
+
+/* 大胆假设标注 */
+.bold-assumption {
+    background: #fff8e6;
+    border-left: 3px solid #d4a030;
+    padding: 10px 14px;
+    margin: 1em 0;
+    font-size: 0.92em;
+}
+
+.bold-assumption::before {
+    content: "大胆假设：";
+    font-weight: 700;
+    color: #b8860b;
+}
+
+/* 动机注释 */
+.motivation-note {
+    color: var(--accent);
+    font-style: italic;
+    font-size: 0.88em;
+    margin: 0.4em 0;
+}
+
+.motivation-note::before {
+    content: "动机：";
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* 品悟锚点 */
+.reflection {
+    background: linear-gradient(135deg, #f0f4f8, #e8ecf0);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin: 2.5em 0 1em;
+}
+
+.reflection-title {
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.8em;
+    font-size: 1em;
+}
+
+.reflection-title::before {
+    content: "◆ ";
+}
+
+.reflection p {
+    color: #2c3e50;
+    font-style: italic;
+}
+
+/* 历史注记 */
+.history-note {
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 1.2em 0;
+    font-size: 0.92em;
+    color: #555;
+}
+
+.history-note .year {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* 代码/公式块 */
+.math-block {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 1em 0;
+    overflow-x: auto;
+    font-size: 0.95em;
+}
+
+/* 标签 */
+.tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.78em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin: 0 4px 4px 0;
+    font-weight: 500;
+}
+
+/* 分隔线 */
+.section-break {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5em 0;
+}
+
+/* 页脚 */
+.footer {
+    margin-top: 3em;
+    padding-top: 1.5em;
+    border-top: 1px solid var(--border);
+    font-size: 0.82em;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* KaTeX 覆盖 */
+.katex { font-size: 1.05em; }
+.katex-display { margin: 1em 0; }
+
+/* 引用块 */
+blockquote {
+    border-left: 3px solid var(--quote-border);
+    padding: 8px 16px;
+    margin: 1em 0;
+    color: #444;
+    font-style: italic;
+    background: #fff;
+}
+</style>
+</head>
+<body>
+
+<h1>{{TITLE}}</h1>
+<p class="subtitle">{{SUBTITLE}}</p>
+
+<div class="meta">
+    标签：{{TAGS}}<br>
+    日期：{{DATE}}
+</p>
+
+<!-- 动机与历史背景 -->
+<h2>一、为什么会有这个问题？</h2>
+<div class="section">
+{{MOTIVATION}}
+</div>
+
+<hr class="section-break">
+
+<!-- 直觉/野蛮推导 -->
+<h2>二、大胆尝试：直觉推导</h2>
+<div class="section">
+{{INTUITIVE_DERIVATION}}
+</div>
+
+<hr class="section-break">
+
+<!-- 严格版本 -->
+<h2>三、严格化：现代框架</h2>
+<div class="section">
+{{RIGOROUS_VERSION}}
+</div>
+
+<hr class="section-break">
+
+<!-- 多视角对比 -->
+<h2>四、换个角度看</h2>
+<div class="section">
+{{MULTI_PERSPECTIVE}}
+</div>
+
+<hr class="section-break">
+
+<!-- 跨领域关联 -->
+<h2>五、意想不到的关联</h2>
+<div class="section">
+{{CROSS_DOMAIN}}
+</div>
+
+<hr class="section-break">
+
+<!-- 品悟锚点 -->
+<div class="reflection">
+<div class="reflection-title">品悟</div>
+{{REFLECTION}}
+</div>
+
+<div class="footer">
+    Generated by IntuitMath · {{DATE}}
+</div>
+
+</body>
+</html>
