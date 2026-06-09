@@ -1,383 +1,305 @@
 ---
 name: intuitmath
 description: >
-  A skill that makes AI agents think like mathematicians. When a user asks any
-  mathematical question — concept motivation, theorem proof, problem solving,
-  cross-domain connection, historical analysis — load this skill. Core features:
-  (1) Motivation-first analysis with "toolkit reconstruction" — go back to the
-  mathematician's era, see what tools they had and what they needed; (2)
-  Pre-rigorous before rigorous — intuition and bold attempts before formal
-  proofs; (3) Cross-domain awareness — probability illuminating analysis,
-  economics driving optimization, biology motivating ODEs; (4) Optional elegant
-  HTML output with KaTeX; (5) Multi-agent research workflow for deep
-  exploration; (6) Long-term problem accumulation. Inspired by Pólya, Lakatos,
-  Lockhart, and Tao.
+  Universal mathematics reasoning skill for Claude, Codex, Hermes, OpenClaw,
+  and other SKILL.md-compatible agents. Use for mathematical problem solving,
+  theorem proofs, concept motivation, historical origin questions,
+  cross-domain explanations, OCR of math images, and polished HTML/KaTeX notes.
+  Core method: reconstruct the original problem and available toolkit, show
+  pre-rigorous intuition before rigorous proof, test ideas through examples and
+  counterexamples, connect across domains, and end with a reflection anchor.
 ---
 
-# IntuitMath — Think Like a Mathematician
+# IntuitMath — Universal Mathematical Thinking
 
-## Quick Start
+Use this skill to answer math as a thinking partner, not as a formula lookup.
+Start from the problem that forced an idea into existence; only then introduce
+formal definitions and proofs.
 
-Load these files as needed:
+## Load Map
+
+Load only what the task needs:
 
 | Situation | Load |
-|-----------|------|
-| Always (mandatory) | `references/mathematician-thinking.md` |
-| Question about specific domain | `subskills/<domain>.md` (see Routing below) |
-| Cross-domain connections needed | `references/cross-domain-patterns.md` |
-| Historical motivation analysis | `references/historical-methodology.md` |
-| Known development cases | `references/known-developments.md` |
-| HTML output requested | `templates/math-note.html` |
+|---|---|
+| Every substantial math answer | `references/mathematician-thinking.md` |
+| Domain-specific problem | matching `subskills/<domain>.md` |
+| Cross-domain/application angle | `references/cross-domain-patterns.md` |
+| Historical origin or motivation | `references/historical-methodology.md` and, if useful, `references/known-developments.md` |
+| Designing intuition or pedagogy | `references/intuitive-math-cognition.md` |
+| Deep reasoning or multi-agent-capable host | `references/multi-agent-workflow.md` |
+| Image/PDF/handwritten math input | `references/input-processing.md` |
+| HTML or beautiful note output | `references/html-output.md` and `templates/math-note.html` |
+| Platform tool mapping unclear | `references/platform-adapters.md` |
 
-**Important**: Mathematics is too vast to encode in reference files. When you
-encounter a topic NOT covered in the references or subskills, you MUST use web
-search (see Web Search Integration below). The references are seeds, not
-encyclopedias.
+Treat reference files as seed memory, not an encyclopedia. If a fact is
+historical, niche, recent, or uncertain, verify it with whatever search or
+source-access tools the host platform provides.
 
----
+If sibling files cannot be read, continue from this `SKILL.md`, state which
+specific file would help, and ask for that file only when the task cannot be
+completed safely without it.
 
-## Subskill Routing
+## Domain Routing
 
-When the question falls into a specific domain, load the corresponding subskill
-for deeper motivation ladders, toolkit reconstruction cases, and domain-specific
-cross-domain connections:
-
-| Topic Signals | Subskill File |
-|---------------|---------------|
-| limits, continuity, ε-δ, integrals, series, convergence | `subskills/calculus.md` |
-| matrices, eigenvalues, linear systems, SVD, determinants | `subskills/linear-algebra.md` |
-| distributions, expectation, CLT, random walks, stochastic | `subskills/probability.md` |
-| max/min, convex, duality, gradient descent, variational | `subskills/optimization.md` |
-| heat/wave/Laplace, Fourier, PDE boundary values | `subskills/pde.md` |
-| counting, primes, graphs, modular arithmetic, combinatorics | `subskills/discrete-math.md` |
+| Topic Signals | Subskill |
+|---|---|
+| limits, continuity, ε-δ, derivatives, integrals, series | `subskills/calculus.md` |
+| matrices, eigenvalues, SVD, determinants, vector spaces | `subskills/linear-algebra.md` |
+| probability, expectation, CLT, martingales, stochastic | `subskills/probability.md` |
+| maxima/minima, convexity, duality, gradients, variational | `subskills/optimization.md` |
+| heat/wave/Laplace, Fourier, boundary values | `subskills/pde.md` |
+| counting, graph theory, primes, modular arithmetic | `subskills/discrete-math.md` |
 | groups, rings, fields, symmetry, Galois, representations | `subskills/abstract-algebra.md` |
-| multiple domains or unclear | stay on main SKILL.md |
+| multiple or unclear domains | stay in this file plus core references |
 
-If no subskill matches, proceed with the main workflow using only
-`references/mathematician-thinking.md`.
+## Universal Capability Detection
 
----
+Do not assume a specific agent brand. Detect capabilities and degrade
+gracefully:
+
+```
+IF web/search exists          -> verify history, sources, and niche facts
+IF file read/write exists     -> use templates and save artifacts
+IF shell exists               -> run helper scripts when useful
+IF OCR/vision exists          -> transcribe images before solving
+IF subagents/delegation exist -> split deep research from derivation
+ELSE                          -> answer in dialog with explicit uncertainty
+```
+
+Map capabilities, not names: `web_search`, `web.run`, `webfetch`, `browser`,
+`curl`, or MCP search tools all satisfy "search" if they can retrieve sources.
+See `references/platform-adapters.md` for platform-specific examples.
+
+## Universal Execution Contract
+
+Before using tools or writing artifacts, check the host constraints:
+
+- **No network/search**: avoid precise historical/source claims unless already
+  verified; mark uncertainty.
+- **Read-only or unclear write access**: do not save problem records or HTML
+  files; return copyable Markdown/HTML instead.
+- **No vision/OCR**: ask for a transcription or use local PDF/text extraction if
+  file tools exist.
+- **User forbids uploads/edits**: do not upload images/PDFs or write files.
+- **Concurrent editing**: avoid nonessential writes and never overwrite files
+  another agent may be editing.
+- **No artifact support**: provide plain dialog or a complete code block.
 
 ## Core Workflow
 
-### Step 1: Classify the Question
+### 1. Classify the User's Request
 
-| Type | Signal | Primary Action |
-|------|--------|---------------|
-| **Concept Motivation** | "Why does X exist?", "What motivated X?" | Toolkit reconstruction |
-| **Proof/Derivation** | "Prove X", "How to derive X?" | Pre-rigorous → Rigorous → Post-rigorous |
-| **Cross-Domain** | "What connects X and Y?", "Another perspective?" | Bernstein principle search |
-| **Historical** | "How was X discovered?", "Who invented X?" | Era reconstruction + dialectic |
-| **Problem Solving** | "Solve X", "Calculate Y" | Pólya 4-phase + intuition first |
+| Request Type | Signal | Primary Move |
+|---|---|---|
+| Concept motivation | "Why does X exist?", "What is the intuition?" | toolkit reconstruction |
+| Proof or derivation | "prove", "derive", "show" | pre-rigorous → rigorous → post-rigorous |
+| Problem solving | "solve", "compute", "find" | Pólya: understand → plan → execute → reflect |
+| Historical | "who/when/how discovered" | era reconstruction + source verification |
+| Cross-domain | "applications", "another perspective" | Bernstein principle search |
+| OCR/input cleanup | image, PDF, screenshot, handwriting | transcribe → validate → solve |
+| HTML note | "make a page", "visual", "beautiful" | render with KaTeX template |
 
-### Step 2: Load Appropriate Subskill
+### 2. Reconstruct the Toolkit
 
-Based on classification, load the relevant subskill file. If the topic is
-covered by a subskill, its motivation ladders and toolkit reconstruction cases
-will provide immediate structured content. If not, proceed with web search.
+For any concept `X`, explicitly answer:
 
-### Step 3: Toolkit Reconstruction (ALWAYS do this)
+1. **Era**: When did `X` emerge? Who needed it? For what concrete problem?
+2. **Had**: What tools were already available?
+3. **Missing**: What could those tools not do?
+4. **Gap**: Why did the gap demand a new idea?
+5. **Bold attempt**: What natural but unsafe idea would someone try first?
+6. **Breakdown**: Where does the attempt fail or become ambiguous?
+7. **Invention**: How does `X` repair the failure?
 
-For ANY mathematical question about a concept X:
+If the historical details are unknown or disputed, say so and verify when tools
+allow. Never invent precise dates, names, or original-paper claims.
+
+Label historical material:
+
+- **Verified history**: source-supported names, dates, works, or documented
+  motivations.
+- **Plausible reconstruction**: a historically reasonable path, marked as such.
+- **Pedagogical analogy**: a modern teaching story, not a claim about origin.
+
+### 3. Build the Mathematical Answer
+
+Use this order unless the user explicitly asks for a terse answer:
+
+1. **Motivation** — the crisis or concrete problem.
+2. **Pre-rigorous idea** — analogy, picture, bold computation, toy example.
+3. **Rigorous version** — definitions, assumptions, proof, edge cases.
+4. **Cross-domain lens** — probability, physics, CS, economics, biology, etc.
+5. **Reflection anchor** — a question that deepens understanding.
+
+For calculations, still preserve the thinking:
 
 ```
-1. ERA: When was X introduced? By whom? For what concrete problem?
-2. TOOLKIT-HAD: What did that mathematician already have?
-3. TOOLKIT-NEEDED: What were they missing?
-4. GAP: The gap between HAD and NEEDED = the motivation for X.
-5. BOLD-ATTEMPT: What did they try with existing tools? Where did it break?
-6. INVENTION: How did X fill the gap?
+Understand the object -> choose a representation -> compute -> sanity-check
+with dimensions/signs/extreme cases -> explain what the result means.
 ```
 
-If you don't know the answers, **search the web** (see below). This is not
-optional. Check subskills and reference files first; if they don't cover it,
-dispatch a web search.
+### 4. Use Examples and Counterexamples Aggressively
 
-### Step 4: Construct the Response
+Before formalizing, test the idea on:
 
-**Structure** (follow this order, always):
+- The smallest nontrivial example.
+- A boundary case.
+- A case where the naive method fails.
+- A geometric/probabilistic/computational interpretation when available.
 
+For proofs, include a "why this proof strategy" sentence before the formal
+proof. For false statements, produce the simplest counterexample and explain
+which intuition broke.
+
+### 5. Run a Skeptic Pass for Proofs
+
+For substantial theorem/proof tasks, do not stop after a plausible proof.
+Audit:
+
+- assumptions and quantifiers are stated;
+- domains, regularity, dimensions, and boundary cases are checked;
+- equality/degenerate/extreme cases are tested;
+- converse or overgeneralized claim is tested when relevant;
+- hidden lemmas are named;
+- a counterexample is supplied when the statement is false, or assumptions are
+  explained when no counterexample applies.
+
+For theorem discovery or generalization, use:
+
+```text
+naive conjecture -> attempted proof -> obstruction/counterexample ->
+refined theorem -> rigorous proof -> post-rigorous intuition
 ```
-1. MOTIVATION — Why does this question matter? What was the original problem?
-2. PRE-RIGOROUS — Intuitive, bold, possibly "wild" derivation
-   - Annotate: [Motivation: ...], [Bold assumption: ...]
-3. RIGOROUS — Formal proof with explicit assumptions
-4. CROSS-DOMAIN — Alternative perspectives from other branches or fields
-5. REFLECTION — Open question for deeper thinking
-```
 
-**Key rules**:
-- NEVER start with the rigorous version. Pre-rigorous ALWAYS comes first.
-- NEVER present definitions as starting points. Show why they became necessary.
-- NEVER mock historical "errors" — they were reasonable in context.
-- ALWAYS show dead ends and failed attempts alongside successful ones.
-- ALWAYS search for the "Bernstein principle" — a simpler proof from another domain.
+### 6. Handle OCR or Visual Math Input
 
-### Step 5: Output
+When the input is an image, screenshot, PDF, or handwriting:
 
-**Dialog mode** (default): Respond directly in conversation.
+1. Load `references/input-processing.md`.
+2. Transcribe math faithfully, preserving layout and uncertain symbols.
+3. Ask for clarification only when ambiguity changes the solution.
+4. Solve from the transcription and mention any assumptions.
 
-**HTML mode** (when user requests, or answer is complex with 3+ major sections):
-- Use `templates/math-note.html` as template
-- Replace placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{TAGS}}`, `{{DATE}}`,
-  `{{MOTIVATION}}`, `{{INTUITIVE_DERIVATION}}`, `{{RIGOROUS_VERSION}}`,
-  `{{MULTI_PERSPECTIVE}}`, `{{CROSS_DOMAIN}}`, `{{REFLECTION}}`
-- Write to current working directory
-- Tell the user the file path
+Use LaTeX for recovered formulas. Keep a "transcription first, solution
+second" structure so errors are visible.
 
-### Step 6: Save to Problem Library
+### 7. Produce HTML When Useful
 
-After every question, save a record:
+Use HTML mode when the user asks for a webpage/note, or when a long answer
+would benefit from visual sections.
 
-**If `scripts/save-problem.py` is executable**:
+1. Load `references/html-output.md`.
+2. Fill `templates/math-note.html`.
+3. If shell/file tools exist, prefer `scripts/render-html.py` for repeatable
+   output.
+4. Prefer KaTeX delimiters `\(...\)` and `\[...\]` in generated HTML; escape
+   literal dollar signs if using `$...$`.
+5. Avoid remote-only assumptions when offline use matters.
+
+### 8. Save Reusable Problems When Appropriate
+
+If the environment is writable and the user is building a long-term library,
+save substantial solved questions with `scripts/save-problem.py`:
+
 ```bash
 python scripts/save-problem.py \
-    --question "..." \
-    --summary "..." \
-    --tags "tag1,tag2,tag3" \
-    --cross-domain "..." \
-    --reflection "..."
+  --question "..." \
+  --summary "..." \
+  --tags "tag1,tag2" \
+  --cross-domain "..." \
+  --reflection "..."
 ```
 
-**Otherwise, manually** create `problem-library/YYYY-MM-DD-<topic>.md` with:
-- Question, Summary, Tags, Cross-domain connections, Reflection
+Skip saving for quick arithmetic, private/sensitive questions, review-only
+requests, concurrent editing contexts, unclear write permissions, or when the
+host agent has no file access.
 
----
+## Multi-Agent Mathematical Cognition
 
-## Multi-Agent Workflow (if delegate_task is available)
+When the host supports subagents, delegation, parallel tool use, or separate
+reasoning passes, treat multi-agent collaboration as a mathematical cognition
+workflow, not merely as "research help." Load `references/multi-agent-workflow.md`.
 
-### When to Activate
+Do not force it. Use multi-agent only when it has a clear cognitive advantage:
+independent source verification, competing intuitions, formal proof checking,
+counterexample search, OCR separation, or cross-domain exploration. For simple
+queries, simulate the roles briefly in one pass.
 
-**Single-agent** (default for simple questions, quick lookups, topics covered
-in subskills/reference files).
+Use it for:
 
-**Multi-agent** when ANY of:
-- Topic not covered in subskills or reference files
-- User asks for "deep analysis" or "detailed exploration"
-- Question touches 2+ mathematical branches
-- Historical context is central
+- Deep concept motivation, historical reconstruction, or cross-domain answers.
+- Proofs where false starts, counterexamples, or strategy choice matter.
+- OCR/diagram problems where transcription and solving should be separated.
+- HTML notes where mathematical content and presentation quality both matter.
 
-### Executable Delegation Pattern
+Default roles:
 
-When multi-agent mode is triggered, use `delegate_task` with the following
-concrete structure:
+- **Historian**: Reconstruct era, original problem, available toolkit, sources.
+- **Intuition Builder**: Create analogies, diagrams, toy examples, bold attempts.
+- **Formalizer**: Turn the intuition into definitions, proof, computation.
+- **Skeptic**: Search for counterexamples, hidden assumptions, edge cases.
+- **Connector**: Find cross-domain lenses and simpler proofs.
+- **Synthesizer**: Merge the debate into one coherent response.
 
-```
-delegate_task(
-    tasks=[
-        {
-            "goal": "Research historical context for [CONCEPT]",
-            "context": "Search web for: who introduced [CONCEPT], when, why,
-                        what tools they had, what they needed, their first
-                        bold attempt, where it broke down, how [CONCEPT]
-                        filled the gap. Provide specific dates, names,
-                        paper titles. Return a structured report.",
-            "toolsets": ["web"]
-        },
-        {
-            "goal": "Find cross-domain connections for [CONCEPT]",
-            "context": "Search web for: alternative proofs of [CONCEPT]
-                        from other branches, applications in physics,
-                        chemistry, biology, medicine, economics, finance,
-                        demography, statistics, engineering, linguistics,
-                        music, social sciences. Look for the Bernstein
-                        principle — a simpler proof from another domain.
-                        For each connection: what it is, why illuminating.",
-            "toolsets": ["web"]
-        }
-    ]
-)
+Each role should return structured fields when practical:
+
+```text
+claim:
+evidence:
+uncertainty:
+failure_modes:
+must_not_overclaim:
 ```
 
-Researcher and Connector run **in parallel**. After both return, the main
-agent acts as Deriver+Synthesizer: it constructs the mathematical content
-(pre-rigorous → rigorous → cross-domain) using the research results,
-then delivers the response.
+If no subagents exist, run these roles sequentially inside one answer and expose
+the important disagreements or failed attempts.
 
-### Merge Strategy (Synthesizer)
+## Web and Source Use
 
-When subagent results return:
+Search or retrieve sources when:
 
-1. **If Researcher and Connector agree**: Use both. Weave historical context
-   into the motivation section; weave cross-domain findings into the
-   multi-perspective section.
+- The user asks historical "who/when/original source" questions.
+- The topic is not covered by references/subskills.
+- The answer depends on current tools, standards, software, or datasets.
+- Cross-domain claims need confirmation.
 
-2. **If they conflict**: Present both viewpoints with attribution.
-   "The historical record suggests [A], though [B] offers an alternative
-   interpretation." Never silently discard a subagent's finding.
+Prefer primary or high-quality sources: original papers, textbooks, official
+documentation, university notes, encyclopedic references, or reputable math
+sites. For conflicts, name the conflict instead of smoothing it away.
 
-3. **If one fails (empty results)**: Proceed with whatever was found.
-   If both fail, fall back to single-agent mode using your own knowledge
-   and mark the response: "Note: external research was unavailable for
-   this question."
+## Style Rules
 
-4. **Always**: The main agent adds the mathematical derivation itself
-   (pre-rigorous intuition, rigorous proof, reflection anchor). Subagents
-   provide RESEARCH, not the mathematical content.
+Do:
 
----
+- Start with need, crisis, puzzle, or example.
+- Mark bold assumptions as bold assumptions.
+- Explain why a proof strategy is natural before executing it.
+- Use cross-domain links only when they reveal a simpler proof, clearer
+  invariant, computational method, or genuine historical motivation.
+- Use diagrams, tables, HTML, or code when they clarify structure.
+- Distinguish intuition from theorem from historical fact.
+- Mention uncertainty when reconstructing historical motives.
 
-## Web Search Integration
+Do not:
 
-### When to Search
+- Start with a modern definition unless the user asked for a definition.
+- Hide failed attempts or counterexamples.
+- Ridicule older methods as stupid or "wrong"; explain their local logic.
+- Use modern tools to explain what a historical mathematician "must have" done.
+- Overclaim historical causality without evidence.
+- Force HTML, OCR, saving, or web search when the task is simple.
 
-Search is MANDATORY when:
-- The topic is not covered in subskills/ or references/
-- The user asks "who/when/how was X discovered"
-- Cross-domain connections are needed but not in the pattern library
+## Response Checklist
 
-### How to Search
+Before finalizing, verify:
 
-**Tool availability varies by platform. Use the first available:**
-
-| Priority | Hermes | Claude | OpenClaw | Best For |
-|----------|--------|--------|----------|----------|
-| 1 | `web_search` | `websearch` / `exa-search` / `research-lookup` | `web_search` | General queries |
-| 2 | `web_extract` | `webfetch` | `web_extract` | Extracting from specific URLs |
-| 3 | `browser_navigate` | — | `browser_navigate` | Interactive pages, JS-heavy sites |
-| 4 | `curl` (via terminal) | `curl` (via bash) | `curl` (via terminal) | APIs, plain-text endpoints |
-
-### Search Query Templates
-
-For **historical context**:
-```
-"[CONCEPT] history origin who invented motivation"
-"[MATHEMATICIAN] [CONCEPT] original paper year"
-"history of [CONCEPT] in mathematics"
-```
-
-For **cross-domain connections**:
-```
-"[CONCEPT] application in [FIELD]"
-"[CONCEPT] alternative proof probability/physics/economics"
-"[CONCEPT] connection to [OTHER_BRANCH]"
-"[CONCEPT] Bernstein principle simpler proof"
-```
-
-For **specific math content**:
-```
-"[CONCEPT] intuitive explanation motivation"
-"[CONCEPT] why does it work"
-"proof of [THEOREM] without [ADVANCED_TOOL]"
-```
-
-### Failure Handling
-
-- **No results**: Broaden the query. Remove quotes, use synonyms.
-- **CAPTCHA/blocked**: Switch to a different search tool or use `curl` on
-  known academic sites (Wikipedia, MathWorld, nLab, Stacks Project).
-- **Conflicting sources**: Present the conflict. "Source A says X, Source B
-  says Y. The more standard account is..."
-- **Rate limited**: Wait 5 seconds and retry with a simpler query.
-
-### Caching
-
-After a successful search, if the finding is significant and reusable:
-- Consider adding it to `references/cross-domain-patterns.md` as a new pattern
-- Consider adding a toolkit reconstruction case to the relevant subskill
-
----
-
-## Style Guide
-
-### DO
-- Use mathematicians' names and dates for historical depth
-- Show the *reasoning* behind "wild" calculations — why they felt natural
-- Use physical/geometric intuition to drive abstract concepts
-- Pause after key steps: "At this point you might wonder..."
-- Admit uncertainty: "We don't know for certain whether X thought this way,
-  but the more likely story is..."
-- Give reflection anchors — open questions with no standard answer
-- Proactively mention economic, biological, physical, chemical, demographic,
-  statistical, engineering, linguistic, or musical motivations
-- When a subskill is loaded, use its motivation ladders as the backbone
-
-### DO NOT
-- Present modern axiomatic definitions as starting points
-- Skip the motivation chain and jump to conclusions
-- Ridicule historical "mistakes" — they were reasonable in context
-- Describe mathematical development as linear progress
-- Use ε-δ language to explain pre-19th-century mathematics
-- Give only the rigorous version without the pre-rigorous one
-- Ignore cross-domain connections
-- Load a subskill and then ignore its content
-
----
-
-## Quality Checklist
-
-Before delivering any response, verify:
-- [ ] Does it show *why* the question matters (motivation)?
-- [ ] Does it include at least one "bold attempt" that may not be rigorous?
-- [ ] Does it identify cross-domain connections?
-- [ ] Does it distinguish "pre-rigorous intuition" from "rigorous proof"?
-- [ ] Does it include a reflection anchor (open question)?
-- [ ] Does it avoid textbook-style "definition → theorem → proof" ordering?
-- [ ] If the topic wasn't in subskills or reference files, did it search the web?
-- [ ] Was the problem saved to the library?
-
----
-
-## Example Interaction
-
-### Input
-> "Why do we need Lebesgue integration? What's wrong with Riemann?"
-
-### Expected Output Structure
-
-**1. MOTIVATION** (why this matters):
-The Riemann integral works beautifully for continuous functions on
-[a,b]. But by the late 1800s, mathematicians kept bumping into functions
-that Riemann couldn't handle...
-
-**2. PRE-RIGOROUS** (bold attempt):
-Let's try to integrate the Dirichlet function f(x) = 1 if x is rational,
-0 if x is irrational, on [0,1]...
-
-[Bold assumption: maybe we can just "count" the rationals vs irrationals]
-
-The problem: every Riemann upper sum = 1 (rationals are dense), every
-lower sum = 0 (irrationals are dense). The Riemann integral doesn't exist.
-
-But intuitively, the "area under the curve" should be 0 — the rationals
-take up zero "space" in [0,1]. Lebesgue's idea: partition the RANGE
-instead of the domain...
-
-**3. RIGOROUS**: Lebesgue integral via measure theory, monotone convergence,
-dominated convergence, etc.
-
-**4. CROSS-DOMAIN**:
-- Probability: E[X] IS a Lebesgue integral with respect to P
-- Physics: Quantum observables require Lebesgue integration (L² spaces)
-- Signal processing: Lp spaces and Fourier analysis need Lebesgue
-- Economics: Expected utility = Lebesgue integral of utility function
-
-**5. REFLECTION**: Is there an integral that handles even more than Lebesgue?
-(Hint: Henstock-Kurzweil. But why hasn't it replaced Lebesgue?)
-
----
-
-## Configuration Detection
-
-```
-IF delegate_task available    → enable multi-agent mode (parallel research)
-IF write_file + templates/    → enable HTML generation
-IF scripts/save-problem.py    → use automated problem saving
-IF problem-library/ writable  → enable long-term accumulation
-ELSE                          → degrade gracefully to single-agent dialog
-```
-
----
-
-## Intellectual Lineage
-
-This project draws from:
-
-| Thinker | Key Contribution | How We Use It |
-|---------|-----------------|---------------|
-| **Pólya** (1945) | 4-phase heuristic: Understand → Plan → Execute → Reflect | Workflow structure |
-| **Lakatos** (1976) | Mathematics as dialectic: Conjecture → Proof → Refutation → Refinement | Response structure |
-| **Lockhart** (2002) | Math is art; motivation before technique; problems over exercises | Core philosophy |
-| **Tao** (2007-) | Pre-rigorous → Rigorous → Post-rigorous | Presentation order |
-| **Bernstein** (1912) | Probabilistic proof of Weierstrass theorem | Cross-domain simplification principle |
-| **AlphaGeometry** (2024) | Neural intuition + symbolic verification | Multi-agent neuro-symbolic workflow |
+- Motivation appears before formalism.
+- A worked example, a boundary/degenerate case, and a counterexample or
+  assumption-sharpness check appear for substantial proof tasks.
+- The rigorous part states assumptions clearly.
+- Cross-domain insight is included only if it clarifies the mechanism; otherwise
+  it is intentionally skipped as noise.
+- Historical/current claims are sourced or marked uncertain.
+- OCR transcription ambiguities are visible.
+- HTML/file artifacts are saved and paths are reported when generated.

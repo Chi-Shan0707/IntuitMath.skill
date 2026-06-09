@@ -20,7 +20,7 @@
 | **Not a textbook** | It starts with the crisis that forced a definition, not the definition itself |
 | **A thinking framework** | Built on Pólya, Lakatos, Lockhart, and Tao — a lineage, not a curriculum |
 
-IntuitMath is a **SKILL.md-compatible portable skill** for AI agents (Hermes, OpenClaw, Claude, and any agent that loads a `SKILL.md`). When a user asks a math question, the agent stops regurgitating textbook definitions and starts reasoning like a mathematician: *What problem was being solved? What tools were available? What broke?*
+IntuitMath is a **SKILL.md-compatible portable skill** for AI agents (Claude, Codex, Hermes, OpenClaw, and any agent that can load a `SKILL.md`). When a user asks a math question, the agent stops regurgitating textbook definitions and starts reasoning like a mathematician: *What problem was being solved? What tools were available? What broke?*
 
 ---
 
@@ -96,6 +96,19 @@ Named after Sergei Bernstein's probabilistic proof of the Weierstrass Approximat
 
 All responses follow: **Pre-rigorous** (intuition, wild calculations, bold assumptions) → **Rigorous** (formal proof) → **Post-rigorous** (refined intuition). Rigor serves intuition, not the reverse.
 
+### Multi-Agent When It Adds Real Value
+
+IntuitMath does **not** force multi-agent overhead. It uses separate agents only when separation improves mathematical cognition:
+
+- **Historian** verifies origin, era, toolkit, and historical uncertainty.
+- **Intuition Builder** invents examples, pictures, and bold first attempts.
+- **Formalizer** turns the idea into definitions, assumptions, and proof.
+- **Skeptic** attacks hidden assumptions, edge cases, and false generalizations.
+- **Connector** finds cross-domain lenses that clarify the mechanism.
+- **Synthesizer** preserves the discovery order: crisis → attempt → breakdown → repair.
+
+For simple questions, the same lenses run internally in one concise pass. See `references/multi-agent-workflow.md` and `references/intuitive-math-cognition.md`.
+
 ---
 
 ## What's Inside
@@ -117,18 +130,75 @@ IntuitMath/
 │   ├── mathematician-thinking.md         Core thinking framework (mandatory)
 │   ├── cross-domain-patterns.md          8 disciplines × pattern library
 │   ├── historical-methodology.md         Reconstruction techniques
-│   └── known-developments.md             Seed cases: antiquity → modern era
+│   ├── known-developments.md             Seed cases: antiquity → modern era
+│   ├── intuitive-math-cognition.md       Research-backed intuition model
+│   ├── multi-agent-workflow.md           Useful-not-forced role workflow
+│   ├── input-processing.md               OCR, screenshots, PDFs, handwriting
+│   ├── html-output.md                    KaTeX/HTML note generation
+│   └── platform-adapters.md              Claude/Codex/Hermes/OpenClaw mapping
 │
 ├── templates/
 │   └── math-note.html                ← KaTeX + serif, elegant output
 │
 ├── scripts/
-│   └── save-problem.py               ← Automated problem library
+│   ├── save-problem.py               ← Automated problem library
+│   └── render-html.py                ← Single-file HTML note renderer
 │
 └── problem-library/                  ← Grows with every question asked
 ```
 
-The agent loads `SKILL.md` first, routes to the appropriate subskill based on the question's domain, and uses web search for anything beyond the seeds.
+The agent loads `SKILL.md` first, routes to the appropriate subskill based on the question's domain, and uses the host platform's available capabilities — search, file tools, shell, OCR/vision, or subagents — without requiring a single vendor runtime.
+
+---
+
+## Universal Agent Compatibility
+
+IntuitMath is intentionally platform-neutral:
+
+| Platform | How to use it |
+|---|---|
+| **Claude** | Add the folder as project/skill context; use web/vision/artifacts when available |
+| **Codex** | Put the folder in a workspace or skill directory; use shell helpers when useful |
+| **Hermes** | Register the folder as a `SKILL.md` skill; map `web_search`/`delegate_task` if available |
+| **OpenClaw** | Place under the skills path and let `SKILL.md` drive routing |
+| **Other agents** | Load `SKILL.md`; read only referenced files as needed |
+
+No mathematical behavior depends on platform-specific metadata. Platform-specific files should remain thin wrappers around the same universal workflow.
+
+---
+
+## OCR and Visual Math
+
+When a user supplies a screenshot, PDF, scan, or handwritten problem, IntuitMath uses a transcription-first workflow:
+
+1. Recover the formula/diagram in LaTeX or structured Markdown.
+2. Mark ambiguous symbols explicitly.
+3. Solve only after the transcription is inspectable.
+4. State assumptions and sanity-check the result against the image.
+
+See `references/input-processing.md`.
+
+---
+
+## HTML / KaTeX Notes
+
+For polished explanations, IntuitMath can generate a single HTML file with CDN KaTeX by default:
+
+```bash
+python scripts/render-html.py \
+  --title "Why Eigenvalues Matter" \
+  --subtitle "Eigenvalues find directions a transformation cannot rotate." \
+  --tags "linear algebra,eigenvalues,geometry" \
+  --section MOTIVATION=motivation.md \
+  --section INTUITIVE_DERIVATION=intuition.md \
+  --section RIGOROUS_VERSION=rigor.md \
+  --section MULTI_PERSPECTIVE=perspective.md \
+  --section CROSS_DOMAIN=connections.md \
+  --section REFLECTION=reflection.md \
+  --out eigenvalues.html
+```
+
+See `references/html-output.md` and `templates/math-note.html`.
 
 ---
 
@@ -153,26 +223,41 @@ The pattern library links mathematics to external disciplines. These aren't "app
 
 ### From GitHub
 ```bash
-git clone https://github.com/Chi-Shan0707/IntuitMath.git
+git clone https://github.com/Chi-Shan0707/IntuitMath.skill.git
 ```
 
 Then link it into your agent's skill directory:
 
+### Claude
+
+Add `SKILL.md` and the referenced folders to a Claude Project or custom skill/context setup. Paths vary by host; keep the whole folder together so `references/`, `subskills/`, `templates/`, and `scripts/` remain reachable.
+
+### Codex
+
+Use it from a workspace or copy it into a Codex skill directory when your Codex environment supports skills:
+
+```bash
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -r IntuitMath.skill "${CODEX_HOME:-$HOME/.codex}/skills/intuitmath"
+```
+
+You can also point Codex at the repository in a normal workspace and ask it to use `SKILL.md`.
+
 ### Hermes
 ```bash
-cp -r IntuitMath ~/.hermes/skills/intuitmath/
+cp -r IntuitMath.skill ~/.hermes/skills/intuitmath/
 ```
 Auto-detected via `SKILL.md`. No configuration needed.
 
 ### OpenClaw
 ```bash
-cp -r IntuitMath /path/to/openclaw/skills/intuitmath/
+cp -r IntuitMath.skill /path/to/openclaw/skills/intuitmath/
 ```
 
 ### Any SKILL.md-compatible Agent
 ```bash
 # Clone first, then point your agent to SKILL.md
-git clone https://github.com/Chi-Shan0707/IntuitMath.git
+git clone https://github.com/Chi-Shan0707/IntuitMath.skill.git
 ```
 
 Load `SKILL.md` into your agent's context when mathematical questions appear. The core thinking framework works everywhere; multi-agent and HTML features require specific agent capabilities.

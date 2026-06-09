@@ -6,6 +6,7 @@
 # System files
 .DS_Store
 Thumbs.db
+.ipynb_checkpoints/
 
 # Research temp (not part of skill, used during development)
 # research-temp/ is tracked but could be excluded in forks

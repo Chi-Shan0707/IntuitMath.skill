@@ -2,7 +2,7 @@
 
 ## 0. Vision
 
-IntuitMath is a portable skill for autonomous AI agents (Hermes, OpenClaw, Claude, etc.) that makes them **think like a mathematician** when facing any mathematical question.
+IntuitMath is a portable skill for autonomous AI agents (Claude, Codex, Hermes, OpenClaw, etc.) that makes them **think like a mathematician** when facing any mathematical question.
 
 Not a calculator. Not a proof checker. Not a textbook.
 
@@ -85,21 +85,35 @@ These are not "applications tacked on at the end." They are *motivations that dr
 Mathematics is too vast to encode in reference files. Instead, IntuitMath provides:
 
 1. **A thinking framework** (this PLAN, the SKILL.md, references/mathematician-thinking.md)
-2. **A multi-agent workflow** that dispatches subagents to *search the web* for historical context, cross-domain connections, and applications
-3. **Templates** for structured output (HTML with KaTeX)
-4. **A problem library** for long-term accumulation
+2. **A utility-gated multi-agent workflow** that separates historian,
+   intuition-builder, formalizer, skeptic, connector, and synthesizer roles
+   only when the separation adds real mathematical value
+3. **Capability adapters** for Claude, Codex, Hermes, OpenClaw, and other
+   SKILL.md-compatible agents
+4. **OCR/input workflows** for screenshots, PDFs, and handwritten math
+5. **Templates** for structured output (HTML with KaTeX)
+6. **A problem library** for long-term accumulation
 
 The reference files contain:
 - `mathematician-thinking.md` — the core methodology (how to think, not what to know)
 - `historical-methodology.md` — techniques for historical reconstruction (ported from Kimi math-history skill)
 - `known-developments.md` — a seed case library (series, calculus, linear algebra, probability, number theory) — NOT comprehensive, but illustrative
 - `cross-domain-patterns.md` — a seed pattern library — grows over time through use and research
+- `intuitive-math-cognition.md` — the cognitive model behind intuition, proof, counterexample, and guided reinvention
+- `multi-agent-workflow.md` — useful-not-forced role workflows and merge protocol
+- `input-processing.md` — OCR/PDF/screenshot/handwriting workflow
+- `html-output.md` — HTML/KaTeX output workflow
+- `platform-adapters.md` — capability mapping for different host agents
 
-**When the agent encounters a topic not covered in references, it MUST dispatch search subagents.** This is by design.
+**When the agent encounters a topic not covered in references, it should use the
+best available capability: source search, subagents, or a single-agent pass with
+explicit uncertainty. Multi-agent is valuable only when it adds independent
+verification, counterexample pressure, alternate representations, or artifact
+quality.**
 
 ---
 
-## 3. Multi-Agent Workflow
+## 3. Utility-Gated Multi-Agent Workflow
 
 ### 3.1 Overview
 
@@ -107,96 +121,51 @@ The reference files contain:
 User Question
      │
      ▼
-[Orchestrator] ── Analyzes question type, dispatches subagents
+[Orchestrator] ── Analyzes question type, decides whether subagents are useful
      │
-     ├── [Researcher] ── Searches web for historical context,
-     │                    biographical info, original motivations
+     ├── [Historian] ── Verifies historical context, original motivations,
+     │                   available toolkit, and uncertainty
      │
-     ├── [Connector] ── Searches web for cross-domain connections,
-     │                    alternative proofs, applications in
-     │                    economics/biology/physics/CS
+     ├── [Intuition Builder] ── Creates toy examples, analogies,
+     │                          diagrams, and bold attempts
      │
-     ├── [Deriver] ── Constructs the mathematical content:
-     │                  pre-rigorous derivation → rigorous version
+     ├── [Formalizer] ── States assumptions, definitions, proof,
+     │                    computations, and boundary conditions
      │
-     └── [Synthesizer] ── Integrates all findings, generates
-                          final response (dialog or HTML)
+     ├── [Skeptic] ── Searches for counterexamples, hidden assumptions,
+     │                 proof gaps, and degenerate cases
+     │
+     ├── [Connector] ── Finds cross-domain lenses only when they clarify
+     │                   proof, invariant, computation, or history
+     │
+     └── [Synthesizer] ── Integrates debate into discovery order:
+                          crisis → attempt → breakdown → repair
 ```
 
-### 3.2 The Research Subagent
+### 3.2 Utility Gate
 
-**Role**: Historical and contextual research.
+Do not spawn agents by ritual. Use them when at least one condition holds:
 
-**Prompt template**:
+- independent historical/source verification could change the answer;
+- multiple representations or intuitions are plausible;
+- the proof has hidden assumptions or fragile edge cases;
+- the user asks for deep exploration;
+- OCR/diagram ambiguity should be separated from solving;
+- the output is both mathematical content and designed artifact.
+
+Otherwise, run the lenses internally in one concise pass.
+
+### 3.3 Role Contracts
+
+Each role should return:
+
 ```
-You are a mathematical historian. For the concept [X]:
-1. Who introduced it? When? In what paper/work?
-2. What concrete problem were they trying to solve?
-3. What mathematical tools did they ALREADY have at that time?
-4. What tools were they MISSING?
-5. What was their first bold attempt?
-6. Where did it break down?
-7. How did [X] fill the gap?
-
-Search the web thoroughly. Provide specific dates, names, paper titles,
-and historical context. Quote primary sources when possible.
+claim:
+evidence:
+uncertainty:
+failure_modes:
+must_not_overclaim:
 ```
-
-### 3.3 The Connector Subagent
-
-**Role**: Cross-domain connection mining.
-
-**Prompt template**:
-```
-You are searching for cross-domain mathematical connections for [X].
-
-Search for:
-1. Alternative proofs from other branches (probability → analysis, 
-   geometry → algebra, etc.) — the "Bernstein principle"
-2. Applications in economics (game theory, optimization, mechanism design)
-3. Applications in biology (population dynamics, phylogenetics, epidemiology)
-4. Applications in physics (quantum mechanics, statistical mechanics, relativity)
-5. Applications in computer science (cryptography, ML, complexity theory)
-6. Historical surprises: cases where an application in Field A drove 
-   the development of pure mathematics in Field B
-
-For each connection, provide:
-- The specific connection (1-2 sentences)
-- Why it's illuminating
-- Source URL if available
-```
-
-### 3.4 The Deriver Subagent
-
-**Role**: Construct mathematical content.
-
-**Instructions**:
-1. Start with the **pre-rigorous** version: intuition, analogy, bold calculations
-2. Annotate each step with motivation: `[Motivation: ...]` and `[Bold assumption: ...]`
-3. Then present the **rigorous** version
-4. If possible, show a **cross-domain alternative** proof
-5. End with a **reflection anchor** — an open question for the user
-
-### 3.5 The Synthesizer
-
-**Role**: Integrate all subagent outputs into a coherent response.
-
-**Decision**: Dialog mode or HTML mode?
-- Default: dialog mode
-- Switch to HTML if: user requests it, or the answer spans 3+ major sections
-
-### 3.6 When to Activate Multi-Agent Mode
-
-**Single-agent mode** (default):
-- Simple questions, quick lookups
-- Topics well-covered in reference files
-- User wants a brief answer
-
-**Multi-agent mode** (triggered when ANY of):
-- Question involves concepts not in reference files
-- User asks for "deep analysis" or "detailed exploration"
-- Question touches 2+ mathematical branches
-- Historical context is central to the question
 
 ---
 
@@ -211,7 +180,12 @@ IntuitMath/
 │   ├── mathematician-thinking.md     # Core methodology
 │   ├── historical-methodology.md     # Historical reconstruction techniques
 │   ├── known-developments.md         # Seed case library
-│   └── cross-domain-patterns.md      # Seed pattern library
+│   ├── cross-domain-patterns.md      # Seed pattern library
+│   ├── intuitive-math-cognition.md   # Intuition/proof/counterexample model
+│   ├── multi-agent-workflow.md       # Useful-not-forced role workflow
+│   ├── input-processing.md           # OCR/PDF/screenshot workflow
+│   ├── html-output.md                # HTML/KaTeX output workflow
+│   └── platform-adapters.md          # Universal capability mapping
 ├── templates/
 │   └── math-note.html                # HTML output template (KaTeX)
 ├── problem-library/
@@ -227,7 +201,8 @@ IntuitMath/
 │   ├── 06-cross-disciplinary-motivation.md
 │   └── 07-math-html-visualization.md
 └── scripts/
-    └── (future: problem-saving utilities)
+    ├── save-problem.py
+    └── render-html.py
 ```
 
 ---
@@ -236,10 +211,12 @@ IntuitMath/
 
 ### Phase 1: Core Framework (current)
 - [x] Research intellectual foundations
-- [ ] Rewrite SKILL.md in English with improved design
+- [x] Rewrite SKILL.md in English with improved universal design
 - [ ] Rewrite references/mathematician-thinking.md in English
 - [ ] Update references/cross-domain-patterns.md with research findings
-- [ ] Update HTML template
+- [x] Add intuition cognition and multi-agent workflow references
+- [x] Add OCR/input processing workflow
+- [x] Update HTML template and renderer
 - [ ] Initial git commit
 
 ### Phase 2: Seed Content

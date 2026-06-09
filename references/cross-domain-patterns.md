@@ -3,6 +3,18 @@
 This is a SEED library. It covers common patterns but is NOT comprehensive.
 When encountering topics not listed here, the agent MUST search the web.
 
+## Inclusion Filter
+
+Include a cross-domain connection only if it does at least one of:
+
+- gives a simpler proof or derivation;
+- reveals the invariant or structure more clearly;
+- provides a computational method;
+- explains genuine historical motivation;
+- supplies a useful counterexample or limiting case.
+
+Skip decorative application lists that do not clarify the mathematics.
+
 ---
 
 ## Table of Contents
