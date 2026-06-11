@@ -116,6 +116,7 @@ For simple questions, the same lenses run internally in one concise pass. See `r
 ```
 IntuitMath/
 ├── SKILL.md                          ← Entry point — the agent loads this
+├── ROUTES.json                        ← Compact navigation index for file routing
 │
 ├── subskills/                        ← Domain-specific deep dives
 │   ├── calculus.md                       Limits, integrals, series, ε-δ

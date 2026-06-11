@@ -20,6 +20,17 @@ formal definitions and proofs.
 
 Load only what the task needs:
 
+Before reading any sibling support file, read `ROUTES.json` first when file
+access exists. It is a compact navigation index for choosing support files
+without loading the whole skill folder. Use it to select the smallest relevant
+set of references, subskills, templates, or scripts.
+
+Do not load `test-cases/` during normal production answers unless the user is
+asking for examples, regression behavior, or evaluation.
+
+`test-cases/` are evaluation fixtures, not runtime reference material. Never use
+them as answer context for an ordinary math question.
+
 | Situation | Load |
 |---|---|
 | Every substantial math answer | `references/mathematician-thinking.md` |

@@ -1,945 +1,603 @@
-# 已知数学发展脉络案例库
+# Known Mathematical Development Threads
 
-本文件记录主要数学领域的历史发展脉络，供回答用户问题时参考。每个领域按时间线组织，包含关键人物、核心问题、直觉动机和重要转折。
+This file is a seed library for motivation-first mathematical explanations.
+It is not a source of final historical authority. Use it to remember common
+development patterns, then verify precise names, dates, and original papers when
+the user asks for history rather than intuition.
 
-## 目录
-- [级数理论](#级数理论)
-- [微积分起源](#微积分起源)
-- [线性代数](#线性代数)
-- [概率论](#概率论)
-- [数论](#数论)
-- [最优化理论](#最优化理论)
-- [偏微分方程](#偏微分方程)
-- [拓扑学](#拓扑学)
-- [范畴论](#范畴论)
-- [现代数学里程碑（1950+）](#现代数学里程碑1950)
+## How to Use This File
 
----
+For a user question:
 
-## 级数理论
+1. Identify the concept and domain.
+2. Find the closest development thread below.
+3. Reconstruct the old toolkit and the obstacle.
+4. Use the thread as a plausible path, not as an exact citation.
+5. Mark material as verified history, plausible reconstruction, or pedagogical
+   analogy.
 
-### 第一阶段：古典时期（几何求积的副产物）
+## Series and Infinite Processes
 
-**阿基米德与等比级数（公元前 3 世纪）**
+### Archimedes and Geometric Exhaustion
 
-阿基米德在《抛物线求积》中面临问题：求抛物线弓形的精确面积。
+Problem pressure: compute curved areas using finite geometry.
 
-他的方法不是现代积分，而是几何填充：
-1. 在弓形内作一个最大内接三角形 T
-2. 在剩下的两个小弓形中各作最大三角形，每个面积为 T/4
-3. 继续在更小的弓形中作三角形，每个新层的总面积是上一层的 1/4
+Core move:
 
-得到面积表达式：A = T + T/4 + T/16 + T/64 + ...
+- Approximate a curved region by a sequence of polygonal or triangular pieces.
+- Avoid saying a completed infinite sum exists.
+- Use exhaustion: any answer larger or smaller than the target is forced into
+  contradiction.
 
-**当时的思维方式**：
-- 阿基米德没有"无穷级数"的概念——古希腊严格禁止实无穷
-- 他用**双重反证法**（exhaustion method）：假设面积大于 4T/3 会导致矛盾，假设小于 4T/3 也导致矛盾，从而"逼"出面积恰好等于 4T/3
-- 级数只是中间计算的记法，没有独立地位
+Intuition:
 
-**品悟点**：阿基米德的"求和"本质上是有限过程（前 n 项），无穷只是潜无穷（可以任意大），而非实无穷（一个完成的整体）。
-
-**奥里斯姆与调和级数（14 世纪）**
-
-尼克尔·奥里斯姆（Nicole Oresme）研究的问题：无限个越来越小正数之和是否一定有限？
-
-他的天才证明（分组法）：
+```text
+Finite stages do the work. Infinity appears as "can be continued as far as
+needed," not as a completed object.
 ```
-1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 + 1/7 + 1/8 + ...
+
+Modern repair:
+
+- Limits and convergent series make the infinite process explicit.
+- Measure and integration later generalize the same pressure.
+
+### Oresme and the Harmonic Series
+
+Problem pressure: can infinitely many shrinking positive terms still accumulate
+without bound?
+
+Core move:
+
+```text
+1 + 1/2 + 1/3 + 1/4 + ...
 > 1/2 + 1/2 + (1/4+1/4) + (1/8+1/8+1/8+1/8) + ...
-= 1/2 + 1/2 + 1/2 + 1/2 + ...
-= 无穷大
 ```
 
-**当时的思维方式**：
-- 奥里斯姆的动机来自物理运动和音律比例
-- 他直接在"项"的层面上操作，不涉及部分和序列的极限
-- 这个结果令人震惊：项趋于 0 但和趋于无穷——打破了"越来越小就能加完"的直觉
+Intuition:
 
-### 第二阶段：17 至 18 世纪（野蛮生长的形式操作时代）
+- Terms going to zero is necessary but not sufficient for a finite sum.
+- Grouping reveals hidden accumulation.
 
-**牛顿与无限长除法（1660s）**
+Use for:
 
-牛顿的核心问题：超越函数（sin x, ln x, e^x）无法用有限代数运算表示，如何计算它们？
+- Explaining why `a_n -> 0` does not imply `sum a_n` converges.
+- Showing why infinite addition needs its own rules.
 
-他的方法——将长除法从算术推广到代数：
-```
-1/(1+x) = 1 - x + x² - x³ + x⁴ - ...
-（通过对 1 ÷ (1+x) 做多项式长除法得到）
-```
+### Newton, Euler, and Formal Series
 
-同时，牛顿将二项式定理 (1+x)^n 推广到任意指数：
-```
-(1+x)^(-1) = 1 - x + x² - x³ + ...
-(1+x)^(1/2) = 1 + (1/2)x - (1/8)x² + (1/16)x³ - ...
-```
+Problem pressure: compute functions that cannot be expressed by finite algebra.
 
-**当时的思维方式（关键！）**：
-- **代数恒等式的无条件适用**：牛顿不问"对于哪些 x 这个等式成立"
-- 左边的母函数和右边的级数是"同一实体的两种书写形式"
-- 代入 x=1 得到格兰迪级数 1-1+1-1+... = 1/2——不认为是矛盾
-- 代入 x=2 得到 1/(1+2) = 1-2+4-8+... = 1/3——同样接受
+Core moves:
 
-**本体论假设**：连续量和离散数字在形式操作上无本质区别。如果长除法在算术域产生无限小数，在代数域必然产生无限多项式。
+- Extend long division from numbers to polynomials.
+- Treat generating functions and series as two forms of the same object.
+- Manipulate infinite expressions using finite algebraic habits.
 
-**莱布尼茨与交错级数（1670s-1710s）**
+Breakdown:
 
-莱布尼茨发现：
-```
-π/4 = 1 - 1/3 + 1/5 - 1/7 + 1/9 - ...
-```
+- Divergent series can receive conflicting values.
+- Rearrangement and grouping are no longer harmless.
 
-这个级数收敛极慢（要计算 500 项才能精确到小数点后 3 位），但它是 π 的第一个"简单"级数表达式。
+Modern repair:
 
-**当时的思维方式**：
-- 莱布尼茨从几何出发：arctan(1) = π/4，而 arctan x 可以展成幂级数
-- 他对这个结果的哲学解读多于数学解读："这个级数展示了一种从有到无的辩证运动"
+- Convergence through partial sums.
+- Formal power series as algebraic objects.
+- Summability and analytic continuation as explicitly different frameworks.
 
-**格兰迪级数与大论战（1703）**
+## Calculus and Analysis
 
-意大利数学家格兰迪（Guido Grandi）研究 S = 1 - 1 + 1 - 1 + ...
+### Ancient Area Problems to Infinitesimals
 
-三种"合理"的分组方式得出三个不同结果：
-```
-S = (1-1) + (1-1) + ... = 0
-S = 1 - (1-1) - (1-1) - ... = 1
-设 S = 1 - 1 + 1 - 1 + ...，则 1 - S = S，故 S = 1/2
-```
+Problem pressure: areas, tangents, volumes, motion, and instantaneous velocity.
 
-**莱布尼茨的辩护**（概率论解释）：
-- "如果在无穷远处随机停止，停在 1 和停在 0 的概率各半"
-- "因此其'自然期望值'或'真值'应当是 1/2"
+Old toolkit:
 
-**核心洞察**：当时的"级数求和"定义不是"部分和序列的极限"，而是"赋予该数学客体一个在代数系统中最自洽的值"。
+- Euclidean geometry.
+- Ratios and exhaustion.
+- Finite algebraic approximations.
 
-**欧拉：形式操作的巅峰（18 世纪）**
+Bold attempts:
 
-欧拉的核心断言："每一个无穷级数都有一个值，这个值等于产生该级数的代数表达式的值。"
+- Indivisibles: treat areas as made from infinitely thin slices.
+- Fluxions: treat quantities as flowing and compare their instantaneous rates.
 
-**操作 1：强行求导**
-从 1/(1+x) = 1 - x + x² - x³ + ... 两边求导：
-```
--1/(1+x)² = -1 + 2x - 3x² + 4x³ - ...
-代入 x=1：1 - 2 + 3 - 4 + 5 - ... = 1/4
-```
+Breakdown:
 
-**操作 2：全体自然数之和**
-```
-设 S = 1 + 2 + 3 + 4 + ... （显然发散）
-已知 S₂ = 1 - 2 + 3 - 4 + ... = 1/4
+- Infinitesimals computed well but lacked stable logical status.
+- Different users could hide different limiting assumptions.
 
-S - S₂ = (1-1) + (2-(-2)) + (3-3) + (4-(-4)) + ...
-       = 0 + 4 + 0 + 8 + 0 + 12 + ...
-       = 4 × (1 + 2 + 3 + ...) = 4S
+Modern repair:
 
-因此 S - 1/4 = 4S，解得 S = -1/12
+- Limits.
+- Derivatives and integrals defined through limiting processes.
+- Later, nonstandard analysis gives a different rigorous home for
+  infinitesimal language.
+
+### Epsilon-Delta Rigor
+
+Problem pressure: calculus produced correct answers, but proofs depended on
+ambiguous words such as "infinitely small" and "approaches."
+
+Core move:
+
+```text
+Instead of saying "x gets close, so f(x) gets close,"
+force the order of the game:
+
+For every desired output tolerance epsilon,
+there exists an input tolerance delta,
+such that all inputs within delta give outputs within epsilon.
 ```
 
-**操作 3：韦达定理的无限推广（巴塞尔问题）**
+Intuition:
 
-欧拉将 sin(x)/x 视为无穷阶多项式，其根为 ±π, ±2π, ±3π, ...
+- The definition is not pedantry; it is adversarial control.
+- The double quantifier prevents choosing the input tolerance after seeing the
+  particular point.
 
-应用韦达定理（根与系数的关系）：
-```
-sin(x)/x = 1 - x²/3! + x⁴/5! - ... 
-         = (1 - x²/π²)(1 - x²/4π²)(1 - x²/9π²)...
+Use for:
 
-比较 x² 项系数：
--1/6 = -1/π² - 1/4π² - 1/9π² - ...
+- Limits.
+- Continuity.
+- Uniform convergence.
+- Stability and robustness analogies.
 
-故 1 + 1/4 + 1/9 + 1/16 + ... = π²/6
-```
+### Riemann to Lebesgue Integration
 
-**这个推导的"野蛮"之处**：
-- sin(x)/x 不是多项式，韦达定理只适用于有限次多项式
-- 无穷乘积的展开需要一致收敛
-- 但欧拉得到了正确答案——而且与严格方法的结果一致
+Problem pressure:
 
-**欧拉的其他"荒谬"结果**：
-```
-1² + 2² + 3² + ... = 0
-1³ + 2³ + 3³ + ... = 1/120
-```
-这些在现代 ζ 函数解析延拓下都有意义：ζ(-2) = 0, ζ(-3) = 1/120
+- Riemann integration handles continuous and many piecewise functions well.
+- It struggles with functions having too many discontinuities.
+- It is not well aligned with limits of function sequences.
 
-### 第三阶段：19 世纪危机与严格化
+Riemann move:
 
-**傅里叶级数的冲击（1807-1822）**
+- Partition the domain.
+- Approximate area by rectangles over intervals.
 
-傅里叶面临的问题：热传导方程 ∂u/∂t = ∂²u/∂x² 如何求解？
+Lebesgue move:
 
-他的大胆假设：任意函数 f(x)（哪怕有间断点）都可表示为：
-```
-f(x) = a₀/2 + Σ(aₙ cos(nx) + bₙ sin(nx))
-```
+- Partition the range.
+- Measure the sets where the function takes certain values.
 
-系数提取方法（当时还没有内积概念！）：
-```
-两边乘以 cos(mx)，然后从 -π 到 π 积分
-∫f(x)cos(mx)dx = aₙ ∫cos²(mx)dx = aₙ·π （当 m=n 时）
+Toy contrast:
 
-故 aₙ = (1/π) ∫f(x)cos(nx)dx
-```
+- Dirichlet function: `1` on rationals, `0` on irrationals.
+- Riemann upper sums stay high and lower sums stay low.
+- Lebesgue integration sees the rationals as measure zero.
 
-**争议**：
-- 拉格朗日坚决反对："这破坏了函数的定义！"
-- 当时的函数概念要求统一的解析表达式
-- 傅里叶的"任意函数"概念等于说：一个图上的曲线，哪怕徒手画出，都有傅里叶展开
+Modern significance:
 
-**柯西的严格化（1821）**
+- Probability expectation.
+- `L^p` spaces.
+- Dominated convergence.
+- Functional analysis and PDE.
 
-柯西面对的核心问题：欧拉的"野蛮操作"导致逻辑崩溃，必须给"收敛"一个严格定义。
+## Linear Algebra
 
-柯西的创造性步骤：
-1. 不直接定义"级数的和"，而是定义"部分和序列"
-2. 级数 Σaₙ 收敛 ⟺ 部分和序列 Sₙ = a₁ + ... + aₙ 有极限
-3. 序列有极限的柯西准则：∀ε>0, ∃N, ∀m>n>N, |Σₖ₌ₙ₊₁ᵐ aₖ| < ε
+### Determinants Before Matrices
 
-**关键洞察**：数学家不需要知道级数收敛到什么值，仅通过项 aₖ 的性质就能判断是否收敛。
+Problem pressure: solve systems of linear equations.
 
-**黎曼级数重排定理（1854）——致命一击**
+Early view:
 
-定理：条件收敛级数通过重排项的顺序，可以收敛到任意实数（甚至发散）。
+- Determinants appear as expressions in solution formulas.
+- They are computational devices before they are structural invariants.
 
-示例（交错调和级数）：
-```
-原级数：1 - 1/2 + 1/3 - 1/4 + 1/5 - 1/6 + ... = ln(2)
+Later repair:
 
-重排（两个正项接一个负项）：
-1 + 1/3 - 1/2 + 1/5 + 1/7 - 1/4 + ... = (3/2)ln(2)
-```
+- Matrices become objects.
+- Linear maps become the conceptual center.
+- Determinants measure volume scaling and invertibility.
 
-**历史意义**：
-- 彻底证明无限加法不满足交换律——级数不是"无限个数的和"
-- 回答"为什么必须单独研究级数"：级数揭示了无限集合的拓扑性质
-- 级数 ≠ 数列：数列研究状态演化，级数研究增量的累积结构
+Use for:
 
-### 第四阶段：现代回响
+- Explaining why determinant formulas feel unmotivated in textbooks.
+- Reframing them as shadows of linear transformations.
 
-**从"错误"中诞生的现代理论**：
+### Eigenvalues and Invariant Directions
 
-| 欧拉的"野蛮操作" | 现代严格解释 |
-|---|---|
-| 1 + 2 + 3 + ... = -1/12 | ζ 函数解析延拓：ζ(-1) = -1/12 |
-| 形式操作发散级数 | 形式幂级数环（不关心收敛，只关心代数结构）|
-| 格兰迪级数 = 1/2 | 切萨罗求和/阿贝尔求和 |
-| 韦达定理用于 sin(x)/x | Weierstrass 因式分解定理 |
-| 强行交换求和次序 | Fubini 定理的条件 |
+Problem pressure:
 
-**核心洞见**：
-欧拉的"代数一般性原则"在现代复分析的解析延拓结构中，是完全严密的。级数的发散不是"没有意义"，而是"在当前赋值系统下没有值"——换一个求和法或延拓到复平面，可能获得精确的值。
+- Understand repeated linear transformations.
+- Find coordinates in which a system decouples.
+- Explain natural modes in mechanics, differential equations, Markov chains, and
+  data analysis.
 
----
+Core intuition:
 
-## 微积分起源
-
-### 第一阶段：面积问题的古代根源（-250 年）
-
-**欧多克索斯的穷竭法**
-
-问题：证明圆的面积与直径平方成正比（即 A = 常数 × r²）。
-
-方法：
-1. 在圆内外作正 n 边形
-2. 通过不断加倍边数，内外多边形面积之差可以任意小
-3. 用双重反证法证明圆面积不能大于或小于某个值
-
-**关键**：没有极限概念，没有无穷小，只有有限几何作图和逻辑反驳。
-
-**阿基米德的突破**
-
-阿基米德不仅是"严格派"，他也使用了一种近乎无穷小的方法（在《方法》一文中）：
-1. 将抛物线弓形视为由无数条线段组成
-2. 把每条线段移到杠杆的另一端
-3. 通过杠杆平衡"计算"面积
-
-**矛盾之处**：阿基米德公开使用这种方法发现定理，但在正式证明中改用穷竭法——他知道无穷小方法不够"干净"。
-
-### 第二阶段：不可分量方法的兴起（1600-1670）
-
-**开普勒的" Nova Stereometria"（1615）**
-
-开普勒的问题：酒桶的体积如何计算？（实际动机：给酒桶定价）
-
-他的方法：
-- 将旋转体视为"由无数个小圆锥组成"
-- 直接求和这些圆锥的体积
-- 用几何直觉代替严格证明
-
-**卡瓦列里原理（1635）**
-
-卡瓦列里的核心思想（不可分量法）：
-- 面积由无数条平行线段（"不可分量"）组成
-- 体积由无数个平行平面（"不可分量"）组成
-- 如果两个图形的不可分量处处相等，则面积/体积相等
-
-示例：求三角形面积
-```
-把三角形看作无数条水平线段堆叠而成
-在高度 y 处，线段长度与 y 成正比（由相似三角形）
-"加起来"得到面积 = (1/2) × 底 × 高
+```text
+Most vectors rotate or mix under a matrix.
+An eigenvector keeps its direction.
+The eigenvalue tells how much it is stretched, flipped, or damped.
 ```
 
-**问题**：不可分量到底有没有"厚度"？
-- 如果有厚度，无数条就有无限厚度
-- 如果没厚度，无数条零厚度加起来还是零
-- 卡瓦列里回避了这个问题："不可分量是介于有和无之间的"——这是哲学遁词
+Discovery path:
 
-**费马的切线法与极值（1629-1637）**
+- Quadratic forms and principal axes.
+- Differential equations and normal modes.
+- Spectral decomposition and operators.
 
-费马面临的问题：求曲线的切线和函数的最大值/最小值。
+Use for:
 
-他的方法（实质就是求导！）：
-```
-求 y = x^n 的切线斜率：
-给 x 一个增量 e，计算 (x+e)^n - x^n 与 e 的比值
-展开 (x+e)^n = x^n + n·x^(n-1)·e + ... + e^n
-比值 = (n·x^(n-1)·e + ...)/e = n·x^(n-1) + 含 e 的项
-"令 e = 0"，得到斜率 = n·x^(n-1)
-```
+- PCA.
+- Stability.
+- Vibrations.
+- Markov chains.
+- Quantum observables.
 
-**关键争议**：e 先是非零（除法需要），然后等于零（去掉剩余项）。这在逻辑上是矛盾的。贝克莱主教后来称 e 为"已死量的幽灵"。
+### SVD and Coordinate Repair
 
-### 第三阶段：牛顿与莱布尼茨（1666-1690）
+Problem pressure: not every matrix has enough eigenvectors, and rectangular
+data matrices are not endomorphisms of one space.
 
-**牛顿的流数术（1666）**
+Core move:
 
-牛顿的问题：已知物体运动的位置-时间关系，求瞬时速度和加速度。
+- Use one orthonormal coordinate system in the input and another in the output.
+- Decompose a linear map into rotation/reflection, axis scaling, and another
+  rotation/reflection.
 
-他的概念体系：
-- **流量**（fluent）：随时间变化的量（相当于函数）
-- **流数**（fluxion）：流量的变化率（相当于导数）
-- 记法：ẋ 表示 x 的流数
+Use for:
 
-**核心方法**（以 y = x² 为例）：
-```
-设 x 有一个"瞬"（moment）o
-y + ȯ = (x + o)² = x² + 2xo + o²
-ȯ = 2xo + o²
-ȯ/o = 2x + o
-"令 o 消失"，得到 ȧ = 2x·ẋ
-```
+- PCA boundary cases.
+- Low-rank approximation.
+- Conditioning.
+- Data compression.
 
-**牛顿的困境**：他知道 o 不能"真的"等于零（否则除法不合法），但又必须让它"消失"。他在《自然哲学的数学原理》中刻意避免使用流数术，改用古典几何——因为他无法给出严格的逻辑基础。
+## Probability
 
-**莱布尼茨的微积分（1675-1684）**
+### From Games of Chance to Measure
 
-莱布尼茨的动机：创造一套通用的"符号计算"系统，可以处理所有变化率问题。
+Problem pressure:
 
-他的核心创新——符号体系：
-- dx：x 的无穷小增量
-- dy：y 的无穷小增量
-- dy/dx：y 对 x 的变化率
-- ∫：求和（拉丁语 summa 的首字母拉长）
+- Fair division of stakes.
+- Repeated trials.
+- Insurance, astronomy, and error.
 
-**核心方法**（以 y = x² 为例）：
-```
-y + dy = (x + dx)² = x² + 2x·dx + (dx)²
-dy = 2x·dx + (dx)²
-由于 dx 是无穷小，(dx)² 是"二阶无穷小"，可以忽略
-dy/dx = 2x
-```
+Early toolkit:
 
-**莱布尼茨 vs 牛顿的根本差异**：
-| 方面 | 牛顿 | 莱布尼茨 |
-|------|------|----------|
-| 动机 | 物理问题（运动、引力） | 通用符号系统 |
-| 概念 | 流数（变化率本身） | 微分之比 dy/dx |
-| 记法 | 点记法（ẋ） | d 记法（dx） |
-| 风格 | 几何直观 | 形式操作 |
-| 发表 | 回避发表，怕受批评 | 积极推广 |
+- Counting equally likely cases.
+- Symmetry.
+- Combinatorics.
 
-### 第四阶段：贝克莱的攻击与危机（1734）
+Breakdown:
 
-贝克莱主教在《分析学家》中对微积分发起毁灭性攻击：
+- Continuous random variables cannot be handled by simple counting.
+- Conditional probability exposes hidden assumptions.
 
-```
-"这些流数是什么？是增量的速度。
-那么这些增量是什么？它们既不是有限的量，
-也不是无穷小的量，更不是零——它们是什么？
-我们也许可以称它们为'已死量的幽灵'。"
-```
+Modern repair:
 
-**攻击的核心**：
-- 如果 o 是某个量，那么 o ≠ 0，不能忽略含 o 的项
-- 如果 o = 0，那么 o/o = 0/0 无意义
-- 如果 o 是"无穷小"，那么无穷小是什么？如何定义？
+- Probability spaces.
+- Random variables as measurable functions.
+- Expectation as integration.
 
-**当时的回应**：
-- 数学家们无法逻辑地回应贝克莱
-- 但他们反驳："微积分在物理和工程中的成功证明了它的正确性"
-- 达朗贝尔："极限理论终将建立，只是时候未到"
+### Law of Large Numbers and Central Limit Behavior
 
-### 第五阶段：严格化的漫长道路（1780-1880）
+Problem pressure:
 
-**拉格朗日的代数尝试（1797）**
+- Why do repeated noisy measurements stabilize?
+- Why does the normal distribution appear so often?
 
-拉格朗日试图用泰勒级数定义导数，回避无穷小：
-```
-f(x + h) = f(x) + f'(x)·h + f''(x)·h²/2! + ... 
-```
-他认为 f'(x) 是这个展开式中 h 的系数。
+Core intuitions:
 
-**问题**：这个定义预设了函数可以展成幂级数，但许多函数不行（如 |x|）。
+- Averaging cancels independent fluctuations.
+- Sums of many small effects often become insensitive to microscopic details.
 
-**柯西的极限定义（1821）**
+Use for:
 
-柯西在《分析教程》中首次给出严格定义：
-- 变量趋近于一个极限
-- 级数收敛的定义
-- 连续函数的定义
+- Sampling.
+- Statistics.
+- Error theory.
+- Monte Carlo methods.
 
-**但柯西有一个错误**：他认为连续函数的级数之和一定连续。这个错误直到 1826 年才被阿贝尔的反例推翻。
+### Martingales and Fair Games
 
-**魏尔斯特拉斯的 ε-δ 定义（1861）**
+Problem pressure:
 
-魏尔斯特拉斯完成了严格化的最后一击：
-```
-lim(x→a) f(x) = L 的定义：
-∀ε > 0, ∃δ > 0, 当 0 < |x-a| < δ 时，|f(x) - L| < ε
+- Model evolving uncertainty without assuming independent increments.
+- Formalize "no predictable gain" in a process.
+
+Core intuition:
+
+```text
+Given everything known now, the expected future value equals the present value.
 ```
 
-这个定义的神奇之处：
-- 完全不涉及"趋近"、"无穷小"等模糊概念
-- 只使用实数、不等式和逻辑量词
-- 无穷小被完全驱逐出分析学
+Use for:
 
-**讽刺**：微积分发明 200 年后，数学家才弄清楚它"真正"在说什么。
+- Optional stopping cautions.
+- Finance.
+- Concentration inequalities.
+- Stochastic processes.
 
----
+## Optimization
 
-## 线性代数
+### Lagrange Multipliers
 
-### 第一阶段：行列式的诞生（解方程的副产物，1693-1812）
+Problem pressure: optimize a quantity under a constraint.
 
-**莱布尼茨的雏形（1693）**
+Geometric intuition:
 
-莱布尼茨在研究线性方程组时，尝试用指标系统表示系数。
-他发明了行列式记法的雏形，但没有系统发展。
+- At the constrained optimum, the objective cannot improve along any allowed
+  tangent direction.
+- The gradient of the objective lies in the span of constraint gradients.
 
-**麦克劳林和克莱姆（1729-1750）**
+Use for:
 
-核心问题：如何写出 n 元线性方程组的显式解？
+- Constrained extrema.
+- Shadow prices.
+- Duality.
 
-克莱姆法则（2×2 和 3×3 情形）：
-```
-ax + by = e    →    x = (ed - bf)/(ad - bc)
-cx + dy = f         y = (af - ec)/(ad - bc)
-```
+### Convexity and Duality
 
-**关键洞察**：分母 (ad - bc) 决定了方程组是否有唯一解。
+Problem pressure:
 
-**当时的思维方式**：
-- 行列式只是解方程的中间计算工具，没有独立地位
-- 没有人想到"矩阵"这个概念——矩阵的发明还要等 100 年
-- 行列式被视为一个数值，而非一个线性变换的性质
+- Nonlinear optimization can have many local traps.
+- Need conditions under which local information controls global behavior.
 
-**范德蒙德的突破（1771）**
+Core intuition:
 
-范德蒙德首次将行列式作为独立对象研究：
-- 他认识到行列式与方程组排列的关系
-- 建立了行列式的基本性质
+- Convex sets have no hidden dents.
+- Convex functions have no deceptive local minima.
+- Duality turns constraints into prices.
 
-### 第二阶段：矩阵概念的迟到（1858）
+Use for:
 
-**凯莱的《矩阵论研究报告》**
+- Linear programming.
+- Machine learning.
+- Variational methods.
+- Economics.
 
-凯莱面临的困境：数学家已经有行列式、有方程组理论，但缺少一个统一的概念框架。
+### Gradient Descent
 
-他的创新：
-1. 引入"矩阵"（matrix）一词——来自拉丁语"子宫"，暗示它"孕育"了行列式
-2. 定义矩阵乘法（非交换！）
-3. 定义矩阵的逆
-4. 提出凯莱-哈密顿定理
+Problem pressure: exact optimization is often too expensive.
 
-**关键事实**：矩阵概念比行列式晚了 100 多年！
+Core intuition:
 
-为什么矩阵来得这么晚？
-- 18 世纪数学家只关心"解"，不关心"变换"
-- 矩阵乘法的不交换性在当时是反直觉的
-- 缺乏抽象代数的眼光——当时没人想"线性变换本身是什么"
+- Local slope gives a cheap direction of improvement.
+- Step size controls the tradeoff between progress and overshoot.
 
-**凯莱的动机**：简化二次型变换的记法
-```
-Q = xᵀAx
-做变量替换 x = Py
-则 Q = yᵀ(PᵀAP)y
-```
-他发现用矩阵记法比展开所有项简洁得多。
+Failure modes:
 
-### 第三阶段：特征值与谱理论（1829-1900）
+- Bad conditioning.
+- Saddle points.
+- Nonconvex landscapes.
+- Noisy gradients.
 
-**柯西的二次型研究（1829）**
+## PDE and Fourier Analysis
 
-柯西的问题：二次型经过正交变换后，其"主轴"是什么？
+### Heat Equation and Fourier Series
 
-他的方法：
-```
-Ax = λx
-求解 det(A - λI) = 0
-```
+Problem pressure: describe heat flow from arbitrary initial temperature.
 
-**当时的术语**：
-- 柯西称特征值为"根"（racines）
-- 他没有"特征向量"的概念——只关心数值
-- 动机来自力学：刚体转动的惯性主轴
+Core move:
 
-**魏尔斯特拉斯和克罗内克的严格化（1868）**
+- Decompose the initial state into sine and cosine modes.
+- Each mode evolves simply under the heat equation.
+- Recombine the modes.
 
-他们将特征值理论建立在行列式和矩阵的严格基础之上。
+Breakdown:
 
-**关键转折**：
-- 特征值从力学问题中抽象出来，成为纯代数概念
-- 但直到 20 世纪量子力学，特征值才获得深刻的物理意义
+- What counts as an arbitrary function?
+- When does the trigonometric series converge to the original function?
 
-### 第四阶段：抽象向量空间（1888-1940）
+Modern repair:
 
-**格拉斯曼的《延伸论》（1844）——太超前而被忽视**
+- Orthogonality.
+- Hilbert spaces.
+- Distributions and weak solutions.
 
-格拉斯曼创造了一个极其抽象的代数系统：
-- n 维向量空间
-- 外积（wedge product）
-- 线性无关、基、维数
+### Weak Solutions
 
-**悲剧**：同时代数学家完全不理解他在做什么。他的书销量极差。
+Problem pressure:
 
-**皮亚诺的公理化（1888）**
+- Many physically meaningful solutions are not classically differentiable.
+- Conservation laws create shocks.
 
-皮亚诺首次给出向量空间的公理化定义。
+Core move:
 
-**诺特和泛代数（1920s）**
+- Move derivatives from the unknown function onto test functions.
+- Define solutions through integral identities.
 
-艾米·诺特将线性代数纳入抽象代数的框架：
-- 模（module）的概念统一了向量空间和线性变换
-- 证明了 Jordan 标准形的一般形式
+Use for:
 
----
+- PDE.
+- Variational methods.
+- Distributions.
+- Finite element methods.
 
-## 概率论
+## Topology and Geometry
 
-### 第一阶段：赌博问题的数学（1654）
+### Compactness as the Replacement for Finiteness
 
-**帕斯卡与费马的通信**
+Problem pressure:
 
-问题："赌金分配问题"（Problem of Points）
+- Infinite spaces often need a finiteness-like property.
+- Continuous functions on closed intervals achieve maxima and minima.
+- Sequences should have convergent subsequences in controlled settings.
 
-情境：
-- 两个赌徒约定先赢 5 局者获得全部赌金
-- 赌博因故中断，此时 A 赢了 4 局，B 赢了 3 局
-- 问：赌金应该如何公平分配？
+Core move:
 
-**帕斯卡的解法**：
-计算如果继续赌，A 和 B 各自获胜的概率。
-最多还需要 2 局：
-- A 赢的概率 = P(A赢下一局) + P(B赢下一局后A赢) = 1/2 + 1/4 = 3/4
-- 所以 A 应得 3/4 的赌金
+- Replace "finite set" with "every open cover has a finite subcover."
 
-**历史意义**：
-- 这是概率论诞生的标志性事件
-- 在此之前，数学家认为"随机事件无法被数学研究"
-- 帕斯卡和费马证明了：不确定性本身可以被量化
+Intuition:
 
-**帕斯卡的赌注**
+- Compactness says that local control can be reduced to finitely many local
+  checks.
 
-帕斯卡将概率思想用于宗教：
-- "信仰上帝"的期望值 = ∞ × (很小的概率) = ∞
-- 所以理性的人应该信仰上帝
+Warnings:
 
-**这说明概率论从一诞生就带有"决策"的基因**。
+- In Euclidean spaces, compact means closed and bounded.
+- In general topological spaces, Heine-Borel is not the definition.
 
-### 第二阶段：大数定律的建立（1713）
+### Homology and Holes
 
-**伯努利的《猜度术》**
+Problem pressure:
 
-雅各布·伯努利面对的核心问题：
-- 我们知道抛硬币正面朝上的"概率"是 1/2
-- 但这个 1/2 是什么意思？是内在属性还是频率极限？
+- Shape should not depend on exact coordinates.
+- Need invariants that survive continuous deformation.
 
-**伯努利大数定律**：
-```
-设 X_n 为 n 次试验中事件发生的频率
-则 P(|X_n - p| > ε) → 0 当 n → ∞
-```
+Core intuition:
 
-**当时的哲学争论**：
-- 频率派：概率是长期频率的极限（伯努利、泊松）
-- 古典派：概率是"等可能情况"的比值（拉普拉斯）
+- Connected components are zero-dimensional holes.
+- Loops surround one-dimensional holes.
+- Voids are higher-dimensional holes.
 
-**伯努利的证明**：
-他花了 20 页纸，用二项式展开和复杂的代数运算证明了这个定理。
-现代证明只需几行切比雪夫不等式——但当时还没有这个概念。
+Use for:
 
-### 第三阶段：正态分布的发现（1733-1809）
+- Algebraic topology.
+- Data analysis.
+- Manifold intuition.
 
-**棣莫弗的近似（1733）**
+### Persistent Homology
 
-棣莫弗的问题：当 n 很大时，二项分布 C(n,k)p^k(1-p)^(n-k) 很难计算。
+Problem pressure:
 
-他的惊人发现：当 n → ∞ 时，二项分布的形状趋近于一条光滑的钟形曲线！
+- Data are noisy and scale-dependent.
+- One chosen radius in a point cloud is arbitrary.
 
-```
-P(X = k) ≈ (1/√(2πnp(1-p))) · exp(-(k-np)²/(2np(1-p)))
-```
+Core move:
 
-**当时没人知道这条曲线的重要性**。
+- Build a filtration of complexes across scales.
+- Track when homology classes are born and when they die.
+- Long-lived features are more plausible structure than short-lived artifacts.
 
-**拉普拉斯的中心极限定理（1812）**
+Warnings:
 
-拉普拉斯将棣莫弗的结果推广：
-- 不只是二项分布，任何独立随机变量之和都趋近正态分布
+- Persistence indicates stability across scale, not semantic meaning by itself.
+- Metric choice, sampling density, and outliers matter.
 
-**高斯的误差理论（1809）**
+## Abstract Algebra and Category Theory
 
-高斯从完全不同的方向发现正态分布：
-- 天文观测中的测量误差
-- 他假设误差分布应该满足：最大似然估计等于算术平均
-- 由此唯一导出正态分布
+### Groups and Symmetry
 
-**名称之争**：
-- 在欧洲大陆称"高斯分布"
-- 在英国称"正态分布"（凯尔文勋爵命名）
+Problem pressure:
 
-### 第四阶段：概率论的公理化（1933）
+- Equations, geometric figures, and physical systems may change appearance while
+  preserving structure.
 
-**柯尔莫哥洛夫的《概率论基础》**
+Core move:
 
-20 世纪初概率论的危机：
-- 数学家质疑概率论是否是"真正的数学"
-- 没有严格的定义，只有直观和赌博例子
+- Study transformations themselves.
+- Capture composition, identity, and inverse operations.
 
-柯尔莫哥洛夫的创造性步骤：
-1. 将概率定义为测度（measure）
-2. 随机变量是可测函数
-3. 期望是勒贝格积分
+Use for:
 
-**意义**：
-- 概率论从此成为数学的一个分支
-- 但也失去了一些哲学深度——"概率是什么"变成了"概率满足什么公理"
+- Galois theory.
+- Geometry.
+- Representation theory.
+- Physics.
 
----
+### Rings and Fields
 
-## 数论
+Problem pressure:
 
-### 第一阶段：欧几里得的遗产（-300 年）
+- Number systems share operations but differ in divisibility, factorization, and
+  solvability.
 
-**欧几里得算法**
+Core move:
 
-问题：求两个数的最大公约数。
+- Abstract the algebraic laws.
+- Study what remains true under those laws.
 
-欧几里得的洞察：gcd(a, b) = gcd(b, a mod b)
+Use for:
 
-**证明素数无穷多**
+- Number theory.
+- Algebraic geometry.
+- Coding theory.
 
-欧几里得的经典反证法：
-```
-假设素数只有有限个：p₁, p₂, ..., pₙ
-考虑 N = p₁p₂...pₙ + 1
-N 不被任何已知素数整除
-所以 N 要么是新的素数，要么有新的素因子
-矛盾！
-```
+### Category Theory
 
-**这个证明的精妙之处**：不需要知道素数分布的任何规律，纯粹逻辑力量。
+Problem pressure:
 
-### 第二阶段：费马的秘密（1637-1665）
+- Similar patterns recur across algebra, topology, logic, and geometry.
+- Need a language for structure-preserving maps and universal properties.
 
-**费马小定理**
+Core move:
 
-```
-若 p 是素数，a 不被 p 整除，则 a^(p-1) ≡ 1 (mod p)
-```
+- Objects matter through their relationships.
+- Universal constructions define objects by the role they play.
 
-费马的证明方法（无限下降法）：
-- 假设存在一个最小的反例
-- 构造出一个更小的反例
-- 矛盾
+Use for:
 
-**费马大定理的边注**
+- Functors.
+- Natural transformations.
+- Adjunctions.
+- Limits and colimits.
 
-```
-"我发现了一个真正美妙的证明，但这页边太窄写不下。"
-```
+Warning:
 
-这个边注困扰了数学家 358 年，直到怀尔斯 1995 年证明。
+- Do not introduce category theory unless it clarifies the user's problem.
 
-### 第三阶段：欧拉与解析数论的萌芽（1737）
+## Modern Applied Threads
 
-**欧拉乘积公式**
+### Automatic Differentiation
 
-```
-Σ(1/nˢ) = Π(1/(1 - p^(-s)))   （对所有素数 p 乘积）
-```
+Problem pressure:
 
-**历史意义**：
-- 第一次将分析（无穷级数）用于研究数论（素数）
-- 开辟了"解析数论"这一全新领域
-- 欧拉用这个公式证明了素数有无穷多（因为当 s=1 时左边是调和级数，发散）
+- Large computational models have millions or billions of parameters.
+- Finite differences are too expensive and numerically fragile.
+- Symbolic differentiation can explode in expression size.
 
-### 第四阶段：高斯的《算术研究》（1801）
+Core move:
 
-**同余理论**
+- Break a computation into elementary operations.
+- Apply the chain rule locally.
+- Reverse-mode AD computes gradients of a scalar output with respect to many
+  inputs in roughly one backward pass.
 
-高斯引入记法 a ≡ b (mod m)，将整除关系转化为等式。
+Use for:
 
-**二次互反律**
+- Deep learning.
+- Scientific computing.
+- Sensitivity analysis.
 
-高斯称之为"黄金定理"：
-```
-(p/q)(q/p) = (-1)^((p-1)(q-1)/4)
-```
-其中 (p/q) 是勒让德符号。
+### Kalman Filtering
 
-高斯一生给出了 8 个不同的证明，每次都使用全新的方法。
+Problem pressure:
 
-### 第五阶段：素数定理（1896）
+- A hidden state evolves over time.
+- Sensors are noisy.
+- Predictions drift and observations jitter.
 
-**高斯的猜想（1792，14 岁）**
+Core move:
 
-高斯观察素数计数函数 π(x)（不超过 x 的素数个数）：
-```
-π(x) ≈ x/ln(x)
-```
+- Carry both a mean estimate and uncertainty.
+- Predict using dynamics.
+- Update using the innovation between predicted and observed measurement.
+- Kalman gain allocates trust between model and sensor.
 
-**证明**：
-- 阿达马和德·拉·瓦莱·普森独立证明（1896）
-- 使用了复分析（黎曼 ζ 函数的零点分布）
-- 至今没有纯初等证明（塞尔伯格和埃尔多斯 1949 年的"初等"证明仍用到 ln x 的渐近）
+Warnings:
 
-**黎曼假设（1859）**
+- Classical optimality assumes linear-Gaussian structure.
+- Nonlinear systems and outliers require extensions or different filters.
 
-黎曼的 ζ 函数：ζ(s) = Σ(1/nˢ)（解析延拓到整个复平面）
+### Tropical Geometry
 
-黎曼假设：ζ(s) = 0 的非平凡零点都位于 Re(s) = 1/2 的直线上。
+Problem pressure:
 
-这是数学最著名的未解决问题。
----
+- Algebraic varieties can be hard to see directly.
+- Degeneration can reveal combinatorial skeletons.
 
-## 最优化理论
+Core move:
 
-### 第一阶段：极值问题的古典根源
+- Replace addition by minimum or maximum and multiplication by addition.
+- Study a piecewise-linear shadow of algebraic geometry.
 
-**费马（1636）**
+Use for:
 
-费马发现：函数取极值的点，其变化率为零。这就是 f'(x) = 0 条件。
+- Valuations.
+- Enumerative geometry.
+- Optimization analogies.
 
-**动机**：光学——费马原理说光走最短时间路径。这是自然界"优化"的第一个数学表述。
+## Safe Historical Labeling
 
-**伯努利（1696）：最速降线问题**
+Use these labels in final answers when relevant:
 
-一个小球从 A 沿曲线滚到 B，什么曲线最快？
+- **Verified history**: source-supported names, dates, publications, or
+  documented motivations.
+- **Plausible reconstruction**: a historically reasonable path that explains why
+  the idea was natural, but is not being claimed as a documented mental process.
+- **Pedagogical analogy**: a modern story that helps intuition but is not a
+  claim about the actual origin.
 
-直觉说直线，但伯努利证明是旋轮线（cycloid）。这个问题开创了**变分法**——将函数本身作为优化变量。
-
-### 第二阶段：拉格朗日乘数法（1788）
-
-**问题**：如何在约束条件下求极值？优化 f(x) 但必须满足 g(x) = 0。
-
-**拉格朗日的洞察**：在极值点，∇f 和 ∇g 必须平行——否则可以沿着约束面移动来改进 f。即 ∇f = λ∇g。
-
-**几何直觉**：目标函数的等高线与约束曲面在极值点**相切**。
-
-### 第三阶段：线性规划（1939-1947）
-
-**康托罗维奇（1939）**
-
-二战期间，苏联需要最优分配资源（木材、劳动力、运输）。康托罗维奇将此形式化为**线性规划**：在线性约束下优化线性目标。
-
-**丹齐格（1947）：单纯形法**
-
-单纯形法沿着可行域（一个凸多面体）的顶点搜索最优解。实际中极其高效，最坏情况指数时间但极少出现。
-
-**意义**：线性规划成为运筹学、经济学、工程学的核心工具。康托罗维奇因此获诺贝尔经济学奖（1975）。
-
-### 第四阶段：凸优化与现代理论
-
-**KKT 条件（1951）**
-
-Karush、Kuhn、Tucker 将拉格朗日乘数法推广到不等式约束——非线性规划的必要条件。
-
-**内点法（Karmarkar, 1984）**
-
-多项式时间的线性规划算法，实际性能与单纯形法竞争。后来推广到一般凸优化。
-
-**Nesterov 加速梯度下降（1983）**
-
-一阶方法的突破：动量项使收敛速度从 O(1/k) 加速到 O(1/k²)。深度学习训练的基石。
-
-**跨领域关联**：
-- 经济学：效用最大化、成本最小化、一般均衡都是优化问题
-- 控制论：最优控制 = 变分法 + 动力学（庞特里亚金最大值原理）
-- 机器学习：训练 = 优化；SGD = 随机梯度下降；正则化 = 约束优化
-- 统计学：最大似然估计 = 参数优化；EM 算法 = 交替优化
-- 物理学：最小作用量原理——自然界在"优化"
-
----
-
-## 偏微分方程
-
-### 第一阶段：弦振动与波动方程（1747）
-
-**达朗贝尔（d'Alembert, 1747）**
-
-振动弦的形状 u(x,t) 满足波动方程。
-
-达朗贝尔给出通解：u(x,t) = f(x-ct) + g(x+ct)——两个行波的叠加。
-
-**争议**：达朗贝尔要求解必须解析（光滑）。欧拉说任意形状的弦都行。这场争论延续了 20 年。
-
-### 第二阶段：热传导方程与傅里叶分析（1807-1822）
-
-**傅里叶（Fourier）的核心问题**：热在金属棒中如何传导？
-
-**傅里叶的大胆想法**：任何函数都可以展开为正弦级数。
-
-**当时的反应**：拉格朗日强烈反对——"任何函数"这个说法太荒唐了。
-
-**为什么傅里叶是对的**：热传导方程在空间和时间上可分离。空间部分的本征函数恰好是正弦函数。展开系数随时间指数衰减。这个物理问题**发明了傅里叶分析**。
-
-### 第三阶段：三大经典方程
-
-| 方程 | 物理起源 | 数学性质 |
-|------|----------|----------|
-| 热方程 | 热传导、扩散 | 抛物型：不可逆、平滑化 |
-| 波动方程 | 弦振动、声波、光 | 双曲型：可逆、传播 |
-| 拉普拉斯方程 | 稳态温度、引力势 | 椭圆型：极值原理 |
-
-**拉普拉斯方程（1782）**：引力势在自由空间满足。复分析中全纯函数的实部和虚部都是调和函数——分析学与几何学的深层联系。
-
-### 第四阶段：弱解与现代理论（1930s-1950s）
-
-**问题**：经典解要求光滑性，但物理问题有间断（激波）、不规则边界、不光滑初始条件。
-
-**索伯列夫（Sobolev, 1935）**：引入 Sobolev 空间——"弱导数"通过分部积分将导数转移到测试函数上。
-
-**Lax-Milgram 定理（1954）**：在 Hilbert 空间框架下证明弱解的存在性和唯一性。
-
-**意义**：现代 PDE 理论的基础。有限元方法的理论依据。
-
-### 第五阶段：深远的成就
-
-**阿蒂亚-辛格指标定理（Atiyah-Singer, 1963）**：椭圆型 PDE 的解析指标与流形的拓扑不变量联系起来。分析 + 拓扑 + 几何的统一。
-
-**佩雷尔曼与庞加莱猜想（Perelman, 2002-2003）**：用 Ricci 流（一个 PDE）证明了三维庞加莱猜想。PDE 解决拓扑问题。
-
-**跨领域关联**：
-- 概率论：热核 = 布朗运动的转移密度；Feynman-Kac 公式用期望解 PDE
-- 物理学：所有物理都是 PDE（麦克斯韦、薛定谔、爱因斯坦、纳维-斯托克斯）
-- 金融学：Black-Scholes PDE = 换元后的热方程
-- 工程学：信号处理（傅里叶）、图像处理（扩散方程）、声学（波动方程）
-
----
-
-## 拓扑学
-
-### 第一阶段：柯尼斯堡七桥问题（1736）
-
-**欧拉（Euler）**：能否走遍柯尼斯堡的七座桥，每座恰好一次？
-
-**答案**：不可能。一个图有欧拉路径当且仅当所有顶点的度数为偶数（或恰好两个奇数度）。
-
-**意义**：欧拉不关心桥的长度、形状、位置——只关心**连接关系**。这是拓扑思维的诞生：关注结构，忽略度量。
-
-### 第二阶段：庞加莱与代数拓扑的诞生（1895-1904）
-
-**庞加莱（Poincaré）** 的核心问题：如何分类空间的"形状"？
-
-**基本群**：在空间中画闭合环路。两个环路可以连续变形为彼此吗？如果不能，空间有"洞"。
-
-**庞加莱猜想（1904）**：每个单连通的三维闭流形都同胚于三维球面。直到 2003 年才被佩雷尔曼证明。
-
-### 第三阶段：同调与上同调（1920s-1940s）
-
-**同调群**：将空间的"洞"量化——0维是连通分量，1维是环状的洞，2维是空腔...
-
-**上同调**：同调的对偶版本，但具有**环结构**（cup 积）——比同调包含更多信息。
-
-**意义**：代数拓扑将"形状"转化为"代数"——群、环、模。可以用代数工具回答几何问题。
-
-### 第四阶段：微分拓扑与莫尔斯理论
-
-**莫尔斯理论（Morse, 1925-1934）**：光滑函数的临界点编码了流形的拓扑。山顶、山谷、鞍点 = 流形的"形状指纹"。
-
-**米尔诺（Milnor, 1956）**：发现异种七维球面——拓扑等价但微分结构不同的流形。
-
-**跨领域关联**：
-- 代数：同调群、上同调环、谱序列
-- 分析：索伯列夫空间、椭圆算子的指标
-- 物理学：拓扑绝缘体、规范场的拓扑不变量（Chern 类）
-- 数据科学：拓扑数据分析（TDA）——用持续同调分析数据的"形状"
-
----
-
-## 范畴论
-
-### 第一阶段：动机——代数拓扑的统一语言（1940s）
-
-**问题**：到 1940 年代，代数拓扑中有大量"自然"的构造——同调群、上同调环、同伦群。这些构造之间有关系（函子），而且关系之间也有关系（自然变换）。
-
-**艾伦伯格-麦克莱恩（Eilenberg and Mac Lane, 1945）**：
-- **范畴（Category）**：对象 + 态射
-- **函子（Functor）**：范畴之间的"映射"（保持结构）
-- **自然变换（Natural Transformation）**：函子之间的"映射"
-
-**当时的评价**："一般抽象废话"（general abstract nonsense）——但这成为了数学的统一语言。
-
-### 第二阶段：格罗滕迪克与代数几何革命（1950s-1960s）
-
-**格罗滕迪克（Grothendieck）** 的愿景：将所有数学统一在范畴论框架下。
-
-**概形（Schemes）**：用交换环的范畴重新定义几何对象。数论和代数几何从此共享同一语言。
-
-**拓扑斯（Topos）**：一个范畴可以充当"数学宇宙"——在其中可以做逻辑、几何、集合论。
-
-**意义**：格罗滕迪克重写了问题的**语言**，使得解决方案变得自然。
-
-### 第三阶段：与计算机科学的融合（1970s-）
-
-**柯里-霍华德对应（Curry-Howard, 1969）**：命题 = 类型，证明 = 程序，蕴含 = 函数。
-
-**同伦类型论（HoTT, 2013）**：Voevodsky 的 univalent foundation——统一拓扑学、逻辑学和编程语言理论。
-
-**跨领域关联**：
-- 代数几何：概形 = 交换环范畴的几何
-- 拓扑学：同伦论 = 范畴论 + 空间
-- 计算机科学：Haskell 的类型类 = 范畴论概念（函子、单子）
-- 逻辑学：直觉主义逻辑 = 笛卡尔闭范畴
-- 物理学：拓扑量子场论（TQFT）= 对称幺半范畴的函子
-
----
-
-## 现代数学里程碑（1950+）
-
-### 1950s-1960s：结构的黄金时代
-
-**分类有限单群（1955-2004）**：数学史上最庞大的合作证明。数百位数学家、上万页论文。每个有限单群要么已知，要么属于 26 个散在群之一。
-
-**阿蒂亚-辛格指标定理（Atiyah-Singer, 1963）**：椭圆微分算子的解析指标 = 拓扑指标。分析 + 拓扑 + 几何的统一。
-
-**格罗滕迪克的概形理论（1960s）**：重写代数几何的基础语言。几乎所有现代代数几何都使用概形。
-
-### 1970s-1980s：新工具与新视野
-
-**瑟斯顿的几何化猜想（Thurston, 1982）**：每个三维流形都可以分解为八种标准几何之一。
-
-**德利涅证明韦伊猜想（Deligne, 1974）**：用 l 进上同调证明了有限域上代数簇的黎曼假设类比。
-
-**琼斯多项式（Jones, 1984）**：纽结的新不变量，来自算子代数。拓扑学 + 代数的意外连接。
-
-### 1990s-2000s：世纪的终结
-
-**怀尔斯证明费马大定理（Wiles, 1995）**：350 年的猜想。证明方法：椭圆曲线 = 模形式。数论 + 代数几何 + 模形式的壮丽统一。
-
-**佩雷尔曼证明庞加莱猜想（Perelman, 2002-2003）**：用 Ricci 流（PDE 方法）。拒绝菲尔兹奖和克雷千禧年奖。
-
-### 2010s-：新世代
-
-**舒尔茨的完美oid空间（Scholze, 2012）**：26 岁时发明的新几何框架，统一 p 进几何。2018 年获菲尔兹奖。
-
-**张益唐 / 梅纳德的素数间隔突破（2013-2014）**：张益唐证明存在无穷多对相差小于 7000 万的素数。Polymath 合作改进至 246。从无穷大到有限数的惊人跨越。
-
-**文卡塔什（Venkatesh, 2018）**：算术统计与遍历理论的统一。朗兰兹纲领的新进展。
-
-**跨领域趋势**：
-- **朗兰兹纲领**：数论 + 表示论 + 代数几何 + 物理学的"大统一理论"
-- **物理到数学**：弦论、量子场论不断产生深刻的数学猜想
-- **计算机辅助证明**：四色定理（1976）到开普勒猜想（Hales, 2014）——什么才算"证明"？
-- **AI 到纯数学**：AlphaTensor、FunSearch——AI 开始参与数学发现

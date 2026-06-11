@@ -1,0 +1,77 @@
+{
+  "name": "intuitmath-navigation",
+  "purpose": "Compact routing index for choosing IntuitMath support files without loading the whole skill folder.",
+  "principle": "Read only the files needed by the current question. Test cases are evaluation fixtures, not runtime reference material; use them only when the user explicitly asks for examples, regression behavior, or evaluation.",
+  "routes": {
+    "calculus_limits": {
+      "triggers": ["limit", "epsilon-delta", "continuity", "derivative", "integral", "series", "real analysis"],
+      "load": ["subskills/calculus.md"],
+      "optional": ["references/intuitive-math-cognition.md", "references/historical-methodology.md"]
+    },
+    "linear_eigen": {
+      "triggers": ["matrix", "eigenvalue", "eigenvector", "SVD", "determinant", "PCA", "linear map"],
+      "load": ["subskills/linear-algebra.md"],
+      "optional": ["references/historical-methodology.md", "references/cross-domain-patterns.md"]
+    },
+    "probability_state_estimation": {
+      "triggers": ["probability", "expectation", "CLT", "random variable", "Bayes", "Kalman filter", "state estimation", "noisy sensor"],
+      "load": ["subskills/probability.md"],
+      "optional": ["references/cross-domain-patterns.md"],
+      "eval_only": ["test-cases/10-kalman-filter.md"]
+    },
+    "optimization_variational": {
+      "triggers": ["maximum", "minimum", "convex", "duality", "gradient descent", "Lagrange multiplier", "variational"],
+      "load": ["subskills/optimization.md"],
+      "optional": ["references/cross-domain-patterns.md"]
+    },
+    "pde_fourier": {
+      "triggers": ["PDE", "heat equation", "wave equation", "Laplace equation", "Fourier", "boundary value", "weak solution"],
+      "load": ["subskills/pde.md"],
+      "optional": ["references/historical-methodology.md", "references/cross-domain-patterns.md"]
+    },
+    "discrete_number_graph": {
+      "triggers": ["combinatorics", "graph", "prime", "modular arithmetic", "generating function", "recurrence"],
+      "load": ["subskills/discrete-math.md"],
+      "optional": ["references/cross-domain-patterns.md"]
+    },
+    "abstract_algebra": {
+      "triggers": ["group", "ring", "field", "Galois", "symmetry", "representation"],
+      "load": ["subskills/abstract-algebra.md"],
+      "optional": ["references/historical-methodology.md", "references/cross-domain-patterns.md"]
+    },
+    "proof_audit": {
+      "triggers": ["prove", "proof gap", "find the flaw", "counterexample", "false conjecture", "hidden assumption"],
+      "load": ["references/mathematician-thinking.md"],
+      "optional": ["references/intuitive-math-cognition.md"]
+    },
+    "historical_origin": {
+      "triggers": ["history", "origin", "who discovered", "why invented", "first appeared", "original paper"],
+      "load": ["references/historical-methodology.md"],
+      "optional": ["references/known-developments.md"]
+    },
+    "cross_domain": {
+      "triggers": ["application", "another perspective", "physics", "CS", "probability lens", "geometry lens", "data"],
+      "load": ["references/cross-domain-patterns.md"],
+      "optional": ["references/mathematician-thinking.md"]
+    },
+    "topological_data": {
+      "triggers": ["persistent homology", "holes in data", "barcode", "topological data analysis", "filtration"],
+      "load": ["references/cross-domain-patterns.md"],
+      "optional": ["references/known-developments.md"],
+      "eval_only": ["test-cases/09-persistent-homology.md"]
+    },
+    "ocr_input": {
+      "triggers": ["image", "screenshot", "scan", "handwriting", "PDF", "OCR", "transcribe"],
+      "load": ["references/input-processing.md"]
+    },
+    "html_note": {
+      "triggers": ["HTML", "webpage", "beautiful note", "KaTeX", "visual note"],
+      "load": ["references/html-output.md", "templates/math-note.html"]
+    },
+    "multi_agent_deep": {
+      "triggers": ["deep explanation", "multiple viewpoints", "verify history", "search for counterexamples", "multi-agent"],
+      "load": ["references/multi-agent-workflow.md"],
+      "optional": ["references/mathematician-thinking.md"]
+    }
+  }
+}

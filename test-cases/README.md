@@ -27,3 +27,5 @@ Suggested coverage:
 - `06-false-conjecture.md`: counterexample and refined theorem
 - `07-proof-gap.md`: proof audit and hidden assumptions
 - `08-multi-agent-trace.md`: useful-not-forced role workflow
+- `09-persistent-homology.md`: scale-dependent topology and noisy data
+- `10-kalman-filter.md`: state estimation, uncertainty, and trust allocation
